@@ -17,6 +17,14 @@ final class LaunchScreen: UIViewController {
         setupView()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let tabBarController = TabBarController()
+        tabBarController.modalPresentationStyle = .fullScreen
+        tabBarController.tabBar.backgroundColor = .white
+        self.present(tabBarController, animated: true)
+    }
+    
     //    MARK: Methods
     private func setupView() {
         view.backgroundColor = .blue
