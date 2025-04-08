@@ -44,6 +44,57 @@ final class HabitCreationViewController: UIViewController {
         return tableView
     }()
     
+    private let emojiLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Emoji"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        return label
+    }()
+    
+    private let emojis = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😢"]
+    
+    private lazy var emojiCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 40, height: 40)
+        layout.minimumInteritemSpacing = 12
+        layout.minimumLineSpacing = 12
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(EmojiCell.self, forCellWithReuseIdentifier: EmojiCell.identifier)
+        return collectionView
+    }()
+    
+    private let colorLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Цвет"
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        return label
+    }()
+    
+    private let colors: [UIColor] = [
+        .colorSelection1, .colorSelection2, .colorSelection3,
+        .colorSelection4, .colorSelection5, .colorSelection6,
+        .colorSelection7, .colorSelection8, .colorSelection9,
+        .colorSelection10, .colorSelection11, .colorSelection12,
+        .colorSelection13, .colorSelection14, .colorSelection15,
+        .colorSelection16, .colorSelection17, .colorSelection18
+    ]
+    
+    private lazy var colorCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 40, height: 40)
+        layout.minimumInteritemSpacing = 12
+        layout.minimumLineSpacing = 12
+        
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(ColorCell.self, forCellWithReuseIdentifier: ColorCell.identifier)
+        return collectionView
+    }()
+    
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Отменить", for: .normal)
@@ -83,7 +134,8 @@ final class HabitCreationViewController: UIViewController {
     private let trackerType: TrackerType
     private var selectedCategory: String? = nil
     private var selectedSchedule: [Weekdays] = []
-
+    private var selectedEmojiIndex: IndexPath?
+    private var selectedColorIndex: IndexPath?
     weak var delegate: HabitCreationDelegate?
     
     // MARK: - Lifecycle
@@ -112,6 +164,10 @@ final class HabitCreationViewController: UIViewController {
             titleLabel,
             nameTextField,
             tableView,
+            emojiLabel,
+            emojiCollectionView,
+            colorLabel,
+            colorCollectionView,
             horizontalStack
         ].forEach {
             view.addSubview($0)
@@ -137,6 +193,23 @@ final class HabitCreationViewController: UIViewController {
             horizontalStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32),
             horizontalStack.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
             horizontalStack.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
+            
+            emojiLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 16),
+            emojiLabel.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
+            
+            emojiCollectionView.topAnchor.constraint(equalTo: emojiLabel.bottomAnchor, constant: 8),
+            emojiCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 200),
+            
+            colorLabel.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
+            colorLabel.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
+            
+            colorCollectionView.topAnchor.constraint(equalTo: colorLabel.bottomAnchor, constant: 8),
+            colorCollectionView.leadingAnchor.constraint(equalTo: emojiCollectionView.leadingAnchor),
+            colorCollectionView.trailingAnchor.constraint(equalTo: emojiCollectionView.trailingAnchor),
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 200),
+            
             cancelButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
@@ -150,12 +223,28 @@ final class HabitCreationViewController: UIViewController {
         let scheduleDays = selectedSchedule
             .compactMap { Weekdays(rawValue: $0.rawValue) }
         
+        // Выбор эмоджи
+        let selectedEmoji: String
+        if let index = selectedEmojiIndex {
+            selectedEmoji = emojis[index.item]
+        } else {
+            selectedEmoji = "📈"
+        }
+        
+        // Выбор цвета
+        let selectedColor: UIColor
+        if let colorIndex = selectedColorIndex {
+            selectedColor = colors[colorIndex.item]
+        } else {
+            selectedColor = colors.first ?? .red
+        }
+        
         delegate?.didCreate(
             .init(
                 id: UUID(),
                 title: nameTextField.text ?? "",
-                color: .red,
-                emoji: "🌙",
+                color: selectedColor,
+                emoji: selectedEmoji,
                 schedule: scheduleDays,
                 explictDate: trackerType == .habit ? nil : Date()
             )
@@ -210,6 +299,70 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
             scheduleVC.modalPresentationStyle = .formSheet
             scheduleVC.delegate = self
             present(scheduleVC, animated: true, completion: nil)
+        }
+    }
+}
+
+// MARK: - CollectionView Delegate & DataSource
+
+extension HabitCreationViewController: UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        if collectionView == colorCollectionView {
+            return colors.count
+        } else if collectionView == emojiCollectionView {
+            return emojis.count
+        }
+        return 0
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        if collectionView == colorCollectionView {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: ColorCell.identifier,
+                for: indexPath
+            ) as! ColorCell
+            let isSelected = (indexPath == selectedColorIndex)
+            cell.configure(with: colors[indexPath.item], isSelected: isSelected)
+            return cell
+        } else if collectionView == emojiCollectionView {
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: EmojiCell.identifier,
+                for: indexPath
+            ) as! EmojiCell
+            let isSelected = (selectedEmojiIndex == indexPath)
+            cell.configure(with: emojis[indexPath.item], isSelected: isSelected)
+            return cell
+        }
+        return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == colorCollectionView {
+            if let previousIndex = selectedColorIndex, previousIndex != indexPath {
+                if let previousCell = collectionView.cellForItem(at: previousIndex) as? ColorCell {
+                    previousCell.configure(with: colors[previousIndex.item], isSelected: false)
+                }
+            }
+            selectedColorIndex = indexPath
+            if let cell = collectionView.cellForItem(at: indexPath) as? ColorCell {
+                cell.configure(with: colors[indexPath.item], isSelected: true)
+            }
+        } else if collectionView == emojiCollectionView {
+            if let previousIndex = selectedEmojiIndex, previousIndex != indexPath {
+                if let previousCell = collectionView.cellForItem(at: previousIndex) as? EmojiCell {
+                    previousCell.configure(with: emojis[previousIndex.item], isSelected: false)
+                }
+            }
+            selectedEmojiIndex = indexPath
+            if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell {
+                cell.configure(with: emojis[indexPath.item], isSelected: true)
+            }
         }
     }
 }
