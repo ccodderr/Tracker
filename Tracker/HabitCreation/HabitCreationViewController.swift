@@ -22,13 +22,14 @@ final class HabitCreationViewController: UIViewController {
         return label
     }()
     
-    private let nameTextField: UITextField = {
+    private lazy var trackerNameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Введите название трекера"
         textField.leftView = UIView(frame: .init(origin: .zero, size: .init(width: 15, height: 1)))
         textField.leftViewMode = .always
         textField.layer.cornerRadius = 16
         textField.backgroundColor = .ypLightGray.withAlphaComponent(0.3)
+        textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         return textField
     }()
     
@@ -81,7 +82,7 @@ final class HabitCreationViewController: UIViewController {
     
     // MARK: - Data
     private let trackerType: TrackerType
-    private var selectedCategory: String? = nil
+    private var selectedCategory: String?
     private var selectedSchedule: [Weekdays] = []
 
     weak var delegate: HabitCreationDelegate?
@@ -101,6 +102,7 @@ final class HabitCreationViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
+        updateCreateButtonState()
     }
     
     // MARK: - UI Setup
@@ -110,7 +112,7 @@ final class HabitCreationViewController: UIViewController {
         
         [
             titleLabel,
-            nameTextField,
+            trackerNameTextField,
             tableView,
             horizontalStack
         ].forEach {
@@ -124,19 +126,19 @@ final class HabitCreationViewController: UIViewController {
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
-            nameTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
-            nameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            nameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            nameTextField.heightAnchor.constraint(equalToConstant: 50),
+            trackerNameTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
+            trackerNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            trackerNameTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            trackerNameTextField.heightAnchor.constraint(equalToConstant: 75),
             
-            tableView.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 16),
-            tableView.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: trackerNameTextField.bottomAnchor, constant: 16),
+            tableView.leadingAnchor.constraint(equalTo: trackerNameTextField.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trackerNameTextField.trailingAnchor),
             tableView.heightAnchor.constraint(equalToConstant: getTableHeight()),
             
             horizontalStack.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -32),
-            horizontalStack.leadingAnchor.constraint(equalTo: nameTextField.leadingAnchor),
-            horizontalStack.trailingAnchor.constraint(equalTo: nameTextField.trailingAnchor),
+            horizontalStack.leadingAnchor.constraint(equalTo: trackerNameTextField.leadingAnchor),
+            horizontalStack.trailingAnchor.constraint(equalTo: trackerNameTextField.trailingAnchor),
             cancelButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
@@ -146,18 +148,32 @@ final class HabitCreationViewController: UIViewController {
         return CGFloat(75 * section)
     }
     
-    @objc func create() {
+    private func updateCreateButtonState() {
+        let isFormFilled = trackerType == .habit
+        ? !(trackerNameTextField.text ?? "").isEmpty && !selectedSchedule.isEmpty
+        : !(trackerNameTextField.text ?? "").isEmpty
+        
+//      && selectedCategory != nil
+        createButton.backgroundColor = isFormFilled ? .ypBlack : .gray
+        createButton.isEnabled = isFormFilled
+    }
+    
+    @objc private func textFieldDidChange() {
+        updateCreateButtonState()
+    }
+    
+    @objc private func create() {
         let scheduleDays = selectedSchedule
             .compactMap { Weekdays(rawValue: $0.rawValue) }
         
         delegate?.didCreate(
             .init(
                 id: UUID(),
-                title: nameTextField.text ?? "",
+                title: trackerNameTextField.text ?? "",
                 color: .red,
                 emoji: "🌙",
                 schedule: scheduleDays,
-                explictDate: trackerType == .habit ? nil : Date()
+                explicitDate: trackerType == .habit ? nil : Date()
             )
         )
         dismiss(animated: true)
@@ -171,7 +187,7 @@ final class HabitCreationViewController: UIViewController {
 // MARK: - UITableView Delegate & DataSource
 extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -179,7 +195,9 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TrackerOptionCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? TrackerOptionCell else {
+            fatalError("Не удалось получить TrackerOptionCell")
+        }
         
         let totalRows = tableView.numberOfRows(inSection: indexPath.section)
         let isLastCell = indexPath.row == totalRows - 1
@@ -203,9 +221,7 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if indexPath.row == 0 {
-            
-        } else {
+        if indexPath.row == 1 {
             let scheduleVC = ScheduleViewController(weekdays: Weekdays.allCases, selectedDays: selectedSchedule)
             scheduleVC.modalPresentationStyle = .formSheet
             scheduleVC.delegate = self
@@ -218,5 +234,6 @@ extension HabitCreationViewController: ScheduleViewControllerDelegate {
     func didSelectSchedule(_ schedule: [Weekdays]) {
         selectedSchedule = schedule
         tableView.reloadData()
+        updateCreateButtonState()
     }
 }

@@ -10,8 +10,7 @@ import UIKit
 protocol TrackersViewControllerProtocol: AnyObject {
     var presenter: TrackersPresenterProtocol? { get set }
     func updateTrackers(
-        _ categories: [TrackerCategory],
-        completedTrackers: [TrackerRecord]
+        _ categories: [TrackerCategory]
     )
     func reloadTrackers()
 }
@@ -20,7 +19,6 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     // MARK: - Properties
     var presenter: TrackersPresenterProtocol?
     private var categories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
 
     private var currentDate: Date = Date() {
         didSet {
@@ -147,11 +145,9 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     func updateTrackers(
-        _ categories: [TrackerCategory],
-        completedTrackers: [TrackerRecord]
+        _ categories: [TrackerCategory]
     ) {
         self.categories = categories
-        self.completedTrackers = completedTrackers
         updateEmptyStateVisibility()
         collectionView.reloadData()
     }
