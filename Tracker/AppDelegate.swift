@@ -6,14 +6,25 @@
 //
 
 import UIKit
+import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
+    static var persistentContainer: NSPersistentContainer = {
+            let container = NSPersistentContainer(name: "Library")
+            container.loadPersistentStores(completionHandler: { (storeDescription, error) in // 3
+                if let error = error as NSError? {
+                    // Код для обработки ошибки
+                }
+            })
+            return container
+        }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        DaysValueTransformer.register()
+        
         return true
     }
 

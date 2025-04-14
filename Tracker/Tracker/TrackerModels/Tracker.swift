@@ -7,13 +7,14 @@
 
 import UIKit
 
-struct Tracker: Identifiable {
+struct Tracker: Identifiable, Codable {
     let id: UUID
     let title: String
-    let color: UIColor
+    let color: CodableColor
     let emoji: String
     let schedule: [Weekdays]
     let explictDate: Date?
+    
 }
 
 enum TrackerType {
@@ -21,7 +22,7 @@ enum TrackerType {
     case irregularEvent
 }
 
-enum Weekdays: String, CaseIterable {
+enum Weekdays: String, CaseIterable, Codable {
     case monday = "Monday"
     case tuesday = "Tuesday"
     case wednesday = "Wednesday"
@@ -48,3 +49,27 @@ enum Weekdays: String, CaseIterable {
 }
 
 
+@propertyWrapper
+struct CodableColor {
+    var wrappedValue: UIColor
+}
+
+extension CodableColor: Codable {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let data = try container.decode(Data.self)
+        guard let color = try NSKeyedUnarchiver.unarchivedObject(ofClass: UIColor.self, from: data) else {
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid color"
+            )
+        }
+        wrappedValue = color
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        let data = try NSKeyedArchiver.archivedData(withRootObject: wrappedValue, requiringSecureCoding: true)
+        try container.encode(data)
+    }
+}

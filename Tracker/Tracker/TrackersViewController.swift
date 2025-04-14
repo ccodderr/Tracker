@@ -178,6 +178,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
 extension TrackersViewController: HabitCreationDelegate {
     func didCreate(_ habit: Tracker) {
         presenter?.addTracker(habit, toCategory: "AAA")
+        
+        AppDelegate.persistentContainer.viewContext
     }
 }
 
