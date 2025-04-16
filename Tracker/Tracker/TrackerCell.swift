@@ -131,6 +131,7 @@ final class TrackerCell: UICollectionViewCell {
         titleLabel.text = tracker.title
         emojiLabel.text = tracker.emoji
         mainView.backgroundColor = tracker.color.wrappedValue
+        button.backgroundColor = tracker.color.wrappedValue
         self.onToggle = onToggle
         self.isCompleted = isCompleted
         updateUI()
@@ -140,7 +141,25 @@ final class TrackerCell: UICollectionViewCell {
     private func updateUI() {
         let iconName = isCompleted ? "checkmark" : "plus"
         button.setImage(UIImage(systemName: iconName), for: .normal)
-        countOfDaysLabel.text = "\(countOfDays) день" + (countOfDays == 1 ? "" : "я")
+        countOfDaysLabel.text = "\(countOfDays) \(dayText(for: countOfDays))"
+    }
+    
+    private func dayText(for count: Int) -> String {
+        let remainder10 = count % 10
+        let remainder100 = count % 100
+
+        if remainder100 >= 11 && remainder100 <= 14 {
+            return "дней"
+        }
+
+        switch remainder10 {
+        case 1:
+            return "день"
+        case 2...4:
+            return "дня"
+        default:
+            return "дней"
+        }
     }
     
     @objc private func buttonTapped() {

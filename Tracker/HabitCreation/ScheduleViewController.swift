@@ -109,7 +109,10 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleCell", for: indexPath) as! ScheduleCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleCell", for: indexPath) as? ScheduleCell else {
+            fatalError("Не удалось получить TrackerOptionCell")
+        }
+        
         let day = weekdays[indexPath.row]
         
         cell.configure(day: day.rawValue, isSelected: selectedDays.contains(day))

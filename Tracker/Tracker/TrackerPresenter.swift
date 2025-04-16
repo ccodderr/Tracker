@@ -27,7 +27,7 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     private var currentDate: Date = Date()
     
     func viewDidLoad() {
-        view?.updateTrackers(categories, completedTrackers: completedTrackers)
+        view?.updateTrackers(categories)
     }
     
     func getCategories() -> [TrackerCategory] {
@@ -39,7 +39,6 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     }
     
     func isTrackerCompleted(_ tracker: Tracker, date: Date) -> Bool {
-      //  completedTrackers.contains(where: { $0.trackerId == tracker.id })
         completedTrackers.contains(
             TrackerRecord(
                 trackerId: tracker.id,
@@ -56,7 +55,10 @@ final class TrackersPresenter: TrackersPresenterProtocol {
         
         let filteredCategories = categories.map { category in
             let filteredTrackers = category.trackers.filter { tracker in
-                tracker.schedule.contains(selectedWeekday)
+                if tracker.explicitDate != nil {
+                    return Calendar.current.isDateInToday(date)
+                }
+                return tracker.schedule.contains(selectedWeekday)
             }
             return TrackerCategory(
                 title: category.title,
@@ -64,21 +66,18 @@ final class TrackersPresenter: TrackersPresenterProtocol {
             )
         }.filter { !$0.trackers.isEmpty }
         
-        view?.updateTrackers(filteredCategories, completedTrackers: completedTrackers)
+        view?.updateTrackers(filteredCategories)
         currentDate = date
     }
     
     // MARK: - Tracker Management
-    /// Добавляет новый трекер в указанную категорию
     func addTracker(_ tracker: Tracker, toCategory categoryTitle: String) {
         var newCategories = categories
         
         if let index = newCategories.firstIndex(where: { $0.title == categoryTitle }) {
-            // Категория уже существует, добавляем в неё трекер
             let updatedCategory = TrackerCategory(title: categoryTitle, trackers: newCategories[index].trackers + [tracker])
             newCategories[index] = updatedCategory
         } else {
-            // Категория не найдена, создаем новую
             let newCategory = TrackerCategory(title: categoryTitle, trackers: [tracker])
             newCategories.append(newCategory)
         }
@@ -87,7 +86,6 @@ final class TrackersPresenter: TrackersPresenterProtocol {
         dateChanged(to: currentDate)
     }
     
-    /// Отмечает трекер как выполненный или отменяет выполнение
     func toggleTrackerCompletion(_ tracker: Tracker, on date: Date) {
         let trackerRecord = TrackerRecord(trackerId: tracker.id, date: date)
         
@@ -97,8 +95,7 @@ final class TrackersPresenter: TrackersPresenterProtocol {
         } else {
             completedTrackers.append(trackerRecord)
         }
-
-        view?.updateTrackers(categories, completedTrackers: completedTrackers)
+        
+        dateChanged(to: date)
     }
-
 }

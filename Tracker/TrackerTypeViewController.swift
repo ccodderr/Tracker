@@ -62,12 +62,12 @@ final class TrackerTypeViewController: UIViewController {
             habitButton.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             habitButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             habitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            habitButton.heightAnchor.constraint(equalToConstant: 50),
+            habitButton.heightAnchor.constraint(equalToConstant: 60),
             
             eventButton.topAnchor.constraint(equalTo: habitButton.bottomAnchor, constant: 16),
             eventButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             eventButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            eventButton.heightAnchor.constraint(equalToConstant: 50)
+            eventButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
