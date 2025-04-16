@@ -59,8 +59,8 @@ final class ColorCell: UICollectionViewCell {
         colorView.backgroundColor = color
         
         if isSelected {
-            containerView.layer.borderWidth = 2
-            containerView.layer.borderColor = color.cgColor
+            containerView.layer.borderWidth = 3
+            containerView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
         } else {
             containerView.layer.borderWidth = 0
             containerView.layer.borderColor = UIColor.clear.cgColor

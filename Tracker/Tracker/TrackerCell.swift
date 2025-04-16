@@ -130,7 +130,7 @@ final class TrackerCell: UICollectionViewCell {
     ) {
         titleLabel.text = tracker.title
         emojiLabel.text = tracker.emoji
-        mainView.backgroundColor = tracker.color
+        mainView.backgroundColor = tracker.color.wrappedValue
         self.onToggle = onToggle
         self.isCompleted = isCompleted
         updateUI()
