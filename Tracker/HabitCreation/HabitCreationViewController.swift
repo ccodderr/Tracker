@@ -259,7 +259,7 @@ final class HabitCreationViewController: UIViewController {
             .init(
                 id: UUID(),
                 title: trackerNameTextField.text ?? "",
-                color: CodableColor(wrappedValue: selectedColor),
+                color: selectedColor.hexString(),
                 emoji: selectedEmoji,
                 schedule: scheduleDays,
                 explicitDate: trackerType == .habit ? nil : Date()

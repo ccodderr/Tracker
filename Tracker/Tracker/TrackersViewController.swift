@@ -19,6 +19,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     // MARK: - Properties
     var presenter: TrackersPresenterProtocol?
     private var categories: [TrackerCategory] = []
+    private let trackerStore = TrackerStore()
 
     private var currentDate: Date = Date() {
         didSet {
@@ -174,9 +175,12 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
 extension TrackersViewController: HabitCreationDelegate {
     func didCreate(_ habit: Tracker) {
         presenter?.addTracker(habit, toCategory: "AAA")
-        
-        AppDelegate.persistentContainer.viewContext
     }
+    
+    func addTracker(_ tracker: Tracker, toCategory category: String) {
+        try? trackerStore.addTracker(tracker)
+    }
+
 }
 
 // MARK: - UICollectionView DataSource & Delegate
@@ -203,11 +207,13 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         
         let isCompleted = presenter?.isTrackerCompleted(tracker, date: currentDate) ?? false
         let isEditable = presenter?.isEditableDate(currentDate) ?? false
+        let countOfDays = presenter?.getCompletedTrackerCount(tracker) ?? .zero
         
         cell.configure(
             with: tracker,
             isCompleted: isCompleted,
             isEditable: isEditable,
+            countOfDays: countOfDays,
             onToggle: { [weak self] in
                 self?.presenter?.toggleTrackerCompletion(
                     tracker,

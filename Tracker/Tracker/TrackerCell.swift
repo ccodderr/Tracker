@@ -126,14 +126,16 @@ final class TrackerCell: UICollectionViewCell {
         with tracker: Tracker,
         isCompleted: Bool,
         isEditable: Bool,
+        countOfDays: Int,
         onToggle: @escaping () -> Void
     ) {
         titleLabel.text = tracker.title
         emojiLabel.text = tracker.emoji
-        mainView.backgroundColor = tracker.color.wrappedValue
-        button.backgroundColor = tracker.color.wrappedValue
+        mainView.backgroundColor = UIColor(hex: tracker.color)
+        button.backgroundColor = UIColor(hex: tracker.color)
         self.onToggle = onToggle
         self.isCompleted = isCompleted
+        self.countOfDays = countOfDays
         updateUI()
         button.isEnabled = isEditable
     }
@@ -164,14 +166,6 @@ final class TrackerCell: UICollectionViewCell {
     
     @objc private func buttonTapped() {
         isCompleted.toggle()
-        
-        if isCompleted {
-            countOfDays += 1
-        } else {
-            countOfDays = max(0, countOfDays - 1)
-        }
-
-        updateUI()
         onToggle?()
     }
 }
