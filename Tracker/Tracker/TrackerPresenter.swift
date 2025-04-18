@@ -22,7 +22,7 @@ protocol TrackersPresenterProtocol: AnyObject {
 // MARK: - Presenter
 final class TrackersPresenter: TrackersPresenterProtocol {
     
-    var view: (any TrackersViewControllerProtocol)?
+    weak var view: (any TrackersViewControllerProtocol)?
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private let trackerStore: TrackerStore
@@ -118,4 +118,3 @@ extension TrackersPresenter: TrackerRecordStoreDelegate {
         dateChanged(to: currentDate)
     }
 }
-

@@ -104,15 +104,27 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(
         _ controller: NSFetchedResultsController<NSFetchRequestResult>
     ) {
+        guard
+            let insertedIndexes = insertedIndexes,
+            let deletedIndexes = deletedIndexes,
+            let updatedIndexes = updatedIndexes,
+            let movedIndexes = movedIndexes
+        else { return }
+        
         delegate?.store(
             self,
             didUpdate: TrackerStoreUpdate(
-                insertedIndexes: insertedIndexes!,
-                deletedIndexes: deletedIndexes!,
-                updatedIndexes: updatedIndexes!,
-                movedIndexes: movedIndexes!
+                insertedIndexes: insertedIndexes,
+                deletedIndexes: deletedIndexes,
+                updatedIndexes: updatedIndexes,
+                movedIndexes: movedIndexes
             )
         )
+        
+        self.insertedIndexes = nil
+        self.deletedIndexes = nil
+        self.updatedIndexes = nil
+        self.movedIndexes = nil
     }
     
     func controller(
@@ -123,12 +135,24 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         newIndexPath: IndexPath?
     ) {
         switch type {
-        case .insert: insertedIndexes?.insert(newIndexPath!.item)
-        case .delete: deletedIndexes?.insert(indexPath!.item)
-        case .update: updatedIndexes?.insert(indexPath!.item)
+        case .insert:
+            guard let newIndexPath = newIndexPath else { return }
+            insertedIndexes?.insert(newIndexPath.item)
+            
+        case .delete:
+            guard let indexPath = indexPath else { return }
+            deletedIndexes?.insert(indexPath.item)
+            
+        case .update:
+            guard let indexPath = indexPath else { return }
+            updatedIndexes?.insert(indexPath.item)
+            
         case .move:
-            movedIndexes?.insert(.init(oldIndex: indexPath!.item, newIndex: newIndexPath!.item))
-        @unknown default: break
+            guard let oldIndexPath = indexPath, let newIndexPath = newIndexPath else { return }
+            movedIndexes?.insert(.init(oldIndex: oldIndexPath.item, newIndex: newIndexPath.item))
+            
+        @unknown default:
+            break
         }
     }
 }

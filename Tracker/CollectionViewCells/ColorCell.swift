@@ -48,23 +48,19 @@ final class ColorCell: UICollectionViewCell {
         containerView.addSubview(colorView)
         colorView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            colorView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 4),
-            colorView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -4),
-            colorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 4),
-            colorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -4),
+            colorView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 6),
+            colorView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -6),
+            colorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 6),
+            colorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -6),
         ])
     }
     
     func configure(with color: UIColor, isSelected: Bool) {
         colorView.backgroundColor = color
-        
-        if isSelected {
-            containerView.layer.borderWidth = 2
-            containerView.layer.borderColor = color.withAlphaComponent(0.3).cgColor
-        } else {
-            containerView.layer.borderWidth = 0
-            containerView.layer.borderColor = UIColor.clear.cgColor
-        }
+        containerView.layer.borderWidth = 3.0
+        containerView.layer.borderColor = isSelected
+        ? color.withAlphaComponent(0.3).cgColor
+        : UIColor.clear.cgColor
     }
 }
 

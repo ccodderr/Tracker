@@ -42,7 +42,12 @@ final class TrackerRecordStore: NSObject {
         
         super.init()
         fetchedResultsController.delegate = self
-        try? fetchedResultsController.performFetch()
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print("Failed to perform fetch for TrackerRecordCoreData: \(error.localizedDescription)")
+        }
     }
     
     func addRecord(_ record: TrackerRecord) {
