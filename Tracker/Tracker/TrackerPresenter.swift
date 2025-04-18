@@ -16,22 +16,40 @@ protocol TrackersPresenterProtocol: AnyObject {
     func addTracker(_ tracker: Tracker, toCategory categoryTitle: String)
     func isTrackerCompleted(_ tracker: Tracker, date: Date) -> Bool
     func isEditableDate(_ date: Date) -> Bool
+    func getCompletedTrackerCount(_ tracker: Tracker) -> Int
 }
 
 // MARK: - Presenter
 final class TrackersPresenter: TrackersPresenterProtocol {
     
-    var view: (any TrackersViewControllerProtocol)?
+    weak var view: (any TrackersViewControllerProtocol)?
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
+    private let trackerStore: TrackerStore
+    private let recordStore: TrackerRecordStore
     private var currentDate: Date = Date()
     
+    init(
+        trackerStore: TrackerStore = TrackerStore(),
+        recordStore: TrackerRecordStore = TrackerRecordStore()
+    ) {
+        self.trackerStore = trackerStore
+        self.recordStore = recordStore
+        trackerStore.delegate = self
+        recordStore.delegate = self
+    }
+    
     func viewDidLoad() {
-        view?.updateTrackers(categories)
+        categories = categorize(trackers: trackerStore.trackers)
+        dateChanged(to: currentDate)
     }
     
     func getCategories() -> [TrackerCategory] {
         return categories
+    }
+    
+    private func categorize(trackers: [Tracker]) -> [TrackerCategory] {
+        return [.init(title: "Category", trackers: trackers)]
     }
     
     func isEditableDate(_ date: Date) -> Bool {
@@ -39,12 +57,11 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     }
     
     func isTrackerCompleted(_ tracker: Tracker, date: Date) -> Bool {
-        completedTrackers.contains(
-            TrackerRecord(
-                trackerId: tracker.id,
-                date: date
-            )
-        )
+        recordStore.isCompleted(tracker, on: date)
+    }
+    
+    func getCompletedTrackerCount(_ tracker: Tracker) -> Int {
+        recordStore.getCountOf(tracker)
     }
     
     func dateChanged(to date: Date) {
@@ -72,30 +89,32 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     
     // MARK: - Tracker Management
     func addTracker(_ tracker: Tracker, toCategory categoryTitle: String) {
-        var newCategories = categories
-        
-        if let index = newCategories.firstIndex(where: { $0.title == categoryTitle }) {
-            let updatedCategory = TrackerCategory(title: categoryTitle, trackers: newCategories[index].trackers + [tracker])
-            newCategories[index] = updatedCategory
-        } else {
-            let newCategory = TrackerCategory(title: categoryTitle, trackers: [tracker])
-            newCategories.append(newCategory)
-        }
-        
-        categories = newCategories
-        dateChanged(to: currentDate)
+        try? trackerStore.addTracker(tracker)
     }
     
     func toggleTrackerCompletion(_ tracker: Tracker, on date: Date) {
-        let trackerRecord = TrackerRecord(trackerId: tracker.id, date: date)
+        let record = TrackerRecord(trackerId: tracker.id, date: date)
         
-        if isTrackerCompleted(tracker, date: date),
-           let index = completedTrackers.firstIndex(of: trackerRecord) {
-            completedTrackers.remove(at: index)
+        if recordStore.isCompleted(tracker, on: date) {
+            recordStore.deleteRecord(record)
         } else {
-            completedTrackers.append(trackerRecord)
+            recordStore.addRecord(record)
         }
         
         dateChanged(to: date)
+    }
+}
+
+extension TrackersPresenter: TrackerStoreDelegate {
+    func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
+        let trackers = store.trackers
+        categories = categorize(trackers: trackers)
+        dateChanged(to: currentDate)
+    }
+}
+
+extension TrackersPresenter: TrackerRecordStoreDelegate {
+    func didUpdateRecords() {
+        dateChanged(to: currentDate)
     }
 }

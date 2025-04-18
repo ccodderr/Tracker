@@ -22,6 +22,5 @@ final class StatisticsViewController: UIViewController {
     
     private func setupLayout() {
         view.backgroundColor = .white
-        
     }
 }

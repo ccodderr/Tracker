@@ -17,7 +17,7 @@ final class ScheduleViewController: UIViewController {
         let label = UILabel()
         label.text = "Расписание"
         label.textColor = .black
-        label.font = .systemFont(ofSize: 18, weight: .medium)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         return label
     }()
     

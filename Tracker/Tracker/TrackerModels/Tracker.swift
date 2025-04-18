@@ -7,10 +7,10 @@
 
 import UIKit
 
-struct Tracker: Identifiable {
+struct Tracker: Identifiable, Codable {
     let id: UUID
     let title: String
-    let color: UIColor
+    let color: String
     let emoji: String
     let schedule: [Weekdays]
     let explicitDate: Date?
