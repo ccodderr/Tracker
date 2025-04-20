@@ -1,20 +1,20 @@
 //
-//  TrackerCategoryStore.swift
+//  CategoryStore.swift
 //  Tracker
 //
-//  Created by Yana Silosieva on 14.04.2025.
+//  Created by Yana Silosieva on 20.04.2025.
 //
 
 import CoreData
 
-final class TrackerCategoryStore {
+final class CategoryStore {
     private let context: NSManagedObjectContext
-    private let fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>
+    private let fetchedResultsController: NSFetchedResultsController<TCategoryCoreData>
     
     init() {
         context = AppDelegate.persistentContainer.viewContext
         
-        let fetchRequest = TrackerCategoryCoreData.fetchRequest()
+        let fetchRequest = TCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
         fetchedResultsController = NSFetchedResultsController(
@@ -27,21 +27,14 @@ final class TrackerCategoryStore {
         try? fetchedResultsController.performFetch()
     }
     
-    func fetchCategories() -> [TrackerCategory] {
+    func fetchCategories() -> [Category] {
         try? fetchedResultsController.performFetch()
         
         guard let results = fetchedResultsController.fetchedObjects
         else { return [] }
         
-        return results.compactMap {
-            guard let title = $0.title,
-                  let trackers = $0.trackers
-            else { return nil }
-            
-            return TrackerCategory(
-                title: title,
-                trackers: trackers
-            )
+        return results.map {
+            Category(title: $0.title ?? "", id: $0.id ?? UUID())
         }
     }
 

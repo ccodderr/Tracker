@@ -173,8 +173,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
 }
 
 extension TrackersViewController: HabitCreationDelegate {
-    func didCreate(_ habit: Tracker) {
-        presenter?.addTracker(habit, toCategory: "AAA")
+    func didCreate(_ habit: Tracker, category: Category) {
+        presenter?.addTracker(habit, toCategory: category.title)
     }
     
     func addTracker(_ tracker: Tracker, toCategory category: String) {

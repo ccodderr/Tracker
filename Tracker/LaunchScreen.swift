@@ -19,6 +19,9 @@ final class LaunchScreen: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+//        let vc = PageViewController()
+//        vc.modalPresentationStyle = .fullScreen
+//        present(vc, animated: true)
         let tabBarController = TabBarController()
         tabBarController.modalPresentationStyle = .fullScreen
         tabBarController.tabBar.backgroundColor = .white
