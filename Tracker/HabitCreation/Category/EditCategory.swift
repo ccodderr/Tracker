@@ -27,7 +27,9 @@ final class EditCategoryViewController: UIViewController {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = "Введите название категории"
-        textField.borderStyle = .none
+        textField.leftView = UIView(frame: .init(origin: .zero, size: .init(width: 15, height: 1)))
+        textField.leftViewMode = .always
+        textField.layer.cornerRadius = 16
         textField.backgroundColor = .ypLightGray.withAlphaComponent(0.3)
         textField.clearButtonMode = .whileEditing
         return textField
@@ -89,7 +91,7 @@ final class EditCategoryViewController: UIViewController {
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            doneButton.heightAnchor.constraint(equalToConstant: 50)
+            doneButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     

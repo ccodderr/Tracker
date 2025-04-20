@@ -169,3 +169,47 @@ final class TrackerCell: UICollectionViewCell {
         onToggle?()
     }
 }
+
+final class TextSectionHeader: UICollectionReusableView {
+    // Идентификатор для повторного использования хедера
+    static let reuseIdentifier = "TextSectionHeader"
+    
+    // Текстовая метка для отображения заголовка секции
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        label.textColor = .label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupView()
+    }
+    
+    private func setupView() {
+        backgroundColor = .systemBackground
+        
+        // Добавляем текстовую метку в представление
+        addSubview(titleLabel)
+        
+        // Настраиваем констрейнты для метки
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+        ])
+    }
+    
+    // Метод для конфигурации заголовка
+    func configure(with title: String) {
+        titleLabel.text = title
+    }
+}

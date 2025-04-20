@@ -11,15 +11,16 @@ import UIKit
 final class CategoryListViewController: UIViewController {
     // MARK: - Properties
     private let viewModel: CategoryListViewModel
-    private var onCategorySelected: ((Category?) -> Void)?
+    private var onCategorySelected: ((CategoryCoreData?) -> Void)?
     
     // MARK: - UI Elements
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseIdentifier)
-        tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = .white
+        tableView.layer.cornerRadius = 16
         return tableView
     }()
     
@@ -39,7 +40,7 @@ final class CategoryListViewController: UIViewController {
         
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(systemName: "star")
+        imageView.image = UIImage(named: "emptyStateImage")
         imageView.tintColor = .systemGray3
         imageView.contentMode = .scaleAspectFit
         
@@ -47,7 +48,7 @@ final class CategoryListViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Привычки и события можно объединить по смыслу"
         label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = .systemGray
+        label.textColor = .ypBlack
         label.textAlignment = .center
         label.numberOfLines = 0
         
@@ -72,14 +73,14 @@ final class CategoryListViewController: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Добавить категорию", for: .normal)
-        button.backgroundColor = .black
+        button.backgroundColor = .ypBlack
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
         return button
     }()
     
     // MARK: - Initialization
-    init(viewModel: CategoryListViewModel, onCategorySelected: @escaping (Category?) -> Void) {
+    init(viewModel: CategoryListViewModel, onCategorySelected: @escaping (CategoryCoreData?) -> Void) {
         self.viewModel = viewModel
         self.onCategorySelected = onCategorySelected
         super.init(nibName: nil, bundle: nil)
@@ -112,7 +113,7 @@ final class CategoryListViewController: UIViewController {
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.bottomAnchor.constraint(equalTo: addButton.topAnchor, constant: -16),
@@ -174,6 +175,25 @@ final class CategoryListViewController: UIViewController {
         )
         present(editVC, animated: true)
     }
+    
+    private func presentDeleteAlert(for index: Int) {
+        let alert = UIAlertController(
+            title: "Эта категория точно не нужна?",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+
+        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+            self?.viewModel.deleteCategory(at: index)
+        }
+
+        let cancelAction = UIAlertAction(title: "Отменить", style: .cancel, handler: nil)
+
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -182,7 +202,7 @@ extension CategoryListViewController: UITableViewDataSource {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        return viewModel.numberOfCategories()
+        viewModel.numberOfCategories()
     }
     
     func tableView(
@@ -195,12 +215,13 @@ extension CategoryListViewController: UITableViewDataSource {
         }
         
         let isSelected = indexPath.row == viewModel.getSelectedCategoryIndex()
-        cell.configure(with: category, isSelected: isSelected)
+        let isLast = indexPath.row == viewModel.numberOfCategories() - 1
+        cell.configure(with: category, isSelected: isSelected, isLast: isLast)
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
+        75
     }
     
     func tableView(
@@ -213,8 +234,8 @@ extension CategoryListViewController: UITableViewDataSource {
                 UIAction(title: "Редактировать") { [weak self] _ in
                     self?.editCategory(at: indexPath)
                 },
-                UIAction(title: "Удалить") { [weak self] _ in
-                    self?.viewModel.deleteCategory(at: indexPath.row)
+                UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                    self?.presentDeleteAlert(for: indexPath.row)
                 }
             ])
         }
@@ -229,7 +250,9 @@ extension CategoryListViewController: UITableViewDelegate {
         viewModel.selectCategory(at: indexPath.row)
         tableView.reloadData()
         
-        guard let category = viewModel.categoryAt(index: indexPath.row) else { return }
+        guard let category = viewModel.dbCategoryAt(index: indexPath.row)
+        else { return }
+        
         onCategorySelected?(category)
     }
 }

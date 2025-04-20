@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Category: Equatable, Hashable {
+struct Category: Equatable, Hashable, Codable {
     let title: String
     let id: UUID
     

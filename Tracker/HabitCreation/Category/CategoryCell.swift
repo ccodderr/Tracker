@@ -27,13 +27,6 @@ final class CategoryCell: UITableViewCell {
         return imageView
     }()
     
-    private let separatorView: UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .systemGray5
-        return view
-    }()
-    
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -47,11 +40,10 @@ final class CategoryCell: UITableViewCell {
     // MARK: - Setup
     private func setupViews() {
         selectionStyle = .none
-        contentView.backgroundColor = .ypLightGray.withAlphaComponent(0.3)
+        contentView.backgroundColor = .ypBackground.withAlphaComponent(0.3)
         
         contentView.addSubview(titleLabel)
         contentView.addSubview(checkmarkImageView)
-        contentView.addSubview(separatorView)
         
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -60,18 +52,17 @@ final class CategoryCell: UITableViewCell {
             checkmarkImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             checkmarkImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             checkmarkImageView.widthAnchor.constraint(equalToConstant: 24),
-            checkmarkImageView.heightAnchor.constraint(equalToConstant: 24),
-            
-            separatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            separatorView.heightAnchor.constraint(equalToConstant: 0.5)
+            checkmarkImageView.heightAnchor.constraint(equalToConstant: 24)
         ])
     }
     
     // MARK: - Configuration
-    func configure(with category: Category, isSelected: Bool) {
+    func configure(with category: Category, isSelected: Bool, isLast: Bool) {
         titleLabel.text = category.title
         checkmarkImageView.isHidden = !isSelected
+        
+        contentView.clipsToBounds = true
+        contentView.layer.cornerRadius = isLast ? 16 : 0
+        contentView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
     }
 }

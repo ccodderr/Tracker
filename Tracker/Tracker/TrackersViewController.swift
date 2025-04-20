@@ -60,6 +60,12 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: "TrackerCell")
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        collectionView.register(
+            TextSectionHeader.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: TextSectionHeader.reuseIdentifier
+        )
         return collectionView
     }()
 
@@ -173,8 +179,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
 }
 
 extension TrackersViewController: HabitCreationDelegate {
-    func didCreate(_ habit: Tracker, category: Category) {
-        presenter?.addTracker(habit, toCategory: category.title)
+    func didCreate(_ habit: Tracker) {
+        presenter?.addTracker(habit)
     }
     
     func addTracker(_ tracker: Tracker, toCategory category: String) {
@@ -192,6 +198,36 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return categories[section].trackers.count
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        viewForSupplementaryElementOfKind kind: String,
+        at indexPath: IndexPath
+    ) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader {
+            guard let header = collectionView.dequeueReusableSupplementaryView(
+                ofKind: kind,
+                withReuseIdentifier: TextSectionHeader.reuseIdentifier,
+                for: indexPath) as? TextSectionHeader else {
+                return UICollectionReusableView()
+            }
+            
+            let title = categories[indexPath.section].title
+            header.configure(with: title)
+            
+            return header
+        }
+        
+        return UICollectionReusableView()
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        referenceSizeForHeaderInSection section: Int
+    ) -> CGSize {
+        return CGSize(width: collectionView.frame.width, height: 40)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

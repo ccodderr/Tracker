@@ -8,7 +8,7 @@
 import UIKit
 
 protocol HabitCreationDelegate: AnyObject {
-    func didCreate(_ habit: Tracker, category: Category)
+    func didCreate(_ habit: Tracker)
 }
 
 final class HabitCreationViewController: UIViewController {
@@ -137,7 +137,7 @@ final class HabitCreationViewController: UIViewController {
     private var selectedSchedule: [Weekdays] = []
     private var selectedEmojiIndex: IndexPath?
     private var selectedColorIndex: IndexPath?
-    private var selectedCategory: Category?
+    private var selectedCategory: CategoryCoreData?
     private var colorCollectionViewHeightConstraint: NSLayoutConstraint!
     private var emojiCollectionViewHeightConstraint: NSLayoutConstraint!
 
@@ -280,11 +280,14 @@ final class HabitCreationViewController: UIViewController {
     }
     
     private func updateCreateButtonState() {
-        let isFormFilled = trackerType == .habit
-        ? !(trackerNameTextField.text ?? "").isEmpty && !selectedSchedule.isEmpty
-        : !(trackerNameTextField.text ?? "").isEmpty
+        let isFormFilled: Bool
         
-//      && selectedCategory != nil
+        if trackerType == .habit {
+            isFormFilled = !(trackerNameTextField.text ?? "").isEmpty && !selectedSchedule.isEmpty && selectedCategory != nil
+        } else {
+            isFormFilled = !(trackerNameTextField.text ?? "").isEmpty && selectedCategory != nil
+        }
+        
         createButton.backgroundColor = isFormFilled ? .ypBlack : .gray
         createButton.isEnabled = isFormFilled
     }
@@ -330,9 +333,9 @@ final class HabitCreationViewController: UIViewController {
                 color: selectedColor.hexString(),
                 emoji: selectedEmoji,
                 schedule: scheduleDays,
-                explicitDate: trackerType == .habit ? nil : Date()
-            ),
-            category: selectedCategory
+                explicitDate: trackerType == .habit ? nil : Date(),
+                category: selectedCategory
+            )
         )
         dismiss(animated: true)
     }
@@ -385,9 +388,13 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.row == 0 {
-            let viewModel = CategoryListViewModel(categoryStore: .init())
+            let viewModel = CategoryListViewModel(
+                categoryStore: .init(),
+                selectedCategoryId: selectedCategory?.id
+            )
             let categoryListVC = CategoryListViewController(viewModel: viewModel) { [weak self] category in
                 self?.selectedCategory = category
+                self?.updateCreateButtonState()
             }
             categoryListVC.modalPresentationStyle = .formSheet
             present(categoryListVC, animated: true, completion: nil)

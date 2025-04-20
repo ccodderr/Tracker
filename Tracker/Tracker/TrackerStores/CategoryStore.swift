@@ -9,12 +9,12 @@ import CoreData
 
 final class CategoryStore {
     private let context: NSManagedObjectContext
-    private let fetchedResultsController: NSFetchedResultsController<TCategoryCoreData>
+    private let fetchedResultsController: NSFetchedResultsController<CategoryCoreData>
     
     init() {
         context = AppDelegate.persistentContainer.viewContext
         
-        let fetchRequest = TCategoryCoreData.fetchRequest()
+        let fetchRequest = CategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
         fetchedResultsController = NSFetchedResultsController(
@@ -39,7 +39,7 @@ final class CategoryStore {
     }
 
     func addCategory(title: String) {
-        let newCategory = TCategoryCoreData(context: context)
+        let newCategory = CategoryCoreData(context: context)
         newCategory.title = title
         newCategory.id = .init()
         
@@ -49,6 +49,14 @@ final class CategoryStore {
         } catch {
             print("Save error: \(error)")
         }
+    }
+    
+    func getCategory(with id: UUID) -> CategoryCoreData? {
+        guard let object = fetchedResultsController.fetchedObjects?.first(
+            where: { $0.id == id }
+        ) else { return nil }
+        
+        return object
     }
     
     func updateCategory(id: UUID, newTitle: String) {

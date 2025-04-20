@@ -5,6 +5,8 @@
 //  Created by Yana Silosieva on 20.04.2025.
 //
 
+import Foundation
+
 final class CategoryListViewModel {
     // MARK: - Properties
     private let categoryStore: CategoryStore
@@ -17,9 +19,14 @@ final class CategoryListViewModel {
     var onError: ((String) -> Void)?
     
     // MARK: - Initialization
-    init(categoryStore: CategoryStore) {
+    init(categoryStore: CategoryStore, selectedCategoryId: UUID?) {
         self.categoryStore = categoryStore
         loadCategories()
+        
+        if let id = selectedCategoryId {
+            selectedCategoryIndex = categories.firstIndex(where: { $0.id == id })
+            onCategoriesUpdated?()
+        }
     }
     
     // MARK: - Public Methods
@@ -82,5 +89,12 @@ final class CategoryListViewModel {
         }
         
         loadCategories()
+    }
+    
+    func dbCategoryAt(index: Int) -> CategoryCoreData? {
+        guard index < categories.count else { return nil }
+        let category = categories[index]
+        
+        return categoryStore.getCategory(with: category.id)
     }
 }
