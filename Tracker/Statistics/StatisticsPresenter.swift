@@ -15,5 +15,4 @@ final class StatisticsPresenter: StatisticsPresenterProtocol {
     
     func viewDidLoad() {
     }
-    
 }
