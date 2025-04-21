@@ -41,7 +41,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         return searchBar
     }()
     
-    private let emptyStateImageView = UIImageView(image: UIImage(named: "emptyStateImage"))
+    private let emptyStateImageView = UIImageView(image: UIImage(resource: .emptyState))
     
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()

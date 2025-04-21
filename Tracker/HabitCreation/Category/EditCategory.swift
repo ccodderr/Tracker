@@ -103,7 +103,7 @@ final class EditCategoryViewController: UIViewController {
     private func configureTitleAndText() {
         if isCategoryEditing {
             titleLabel.text = "Редактирование категории"
-            if let index = categoryIndex, let category = viewModel.categoryAt(index: index) {
+            if let index = categoryIndex, let category = viewModel.getCategory(at: index) {
                 textField.text = category.title
             }
         } else {

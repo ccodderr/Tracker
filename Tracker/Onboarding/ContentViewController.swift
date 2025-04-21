@@ -19,11 +19,11 @@ final class  ContentViewController: UIViewController {
         return label
     }()
     
-    var curentPage = 0
+    var currentPage = 0
     
-    init(backgroundImage: UIImage?, text: String, curentPage: Int) {
+    init(backgroundImage: UIImage?, text: String, currentPage: Int) {
         self.backgroundImage = .init(image: backgroundImage)
-        self.curentPage = curentPage
+        self.currentPage = currentPage
         super.init(nibName: nil, bundle: nil)
         
         self.titleTextLabel.text = text
@@ -35,7 +35,6 @@ final class  ContentViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        setupUI()
         
         view.addSubview(backgroundImage)
         view.addSubview(titleTextLabel)

@@ -40,7 +40,7 @@ final class CategoryListViewController: UIViewController {
         
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = UIImage(named: "emptyStateImage")
+        imageView.image = UIImage(resource: .emptyState)
         imageView.tintColor = .systemGray3
         imageView.contentMode = .scaleAspectFit
         
@@ -210,7 +210,7 @@ extension CategoryListViewController: UITableViewDataSource {
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.reuseIdentifier, for: indexPath) as? CategoryCell,
-              let category = viewModel.categoryAt(index: indexPath.row) else {
+              let category = viewModel.getCategory(at: indexPath.row) else {
             return UITableViewCell()
         }
         

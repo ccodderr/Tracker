@@ -39,7 +39,7 @@ final class CategoryListViewModel {
         return categories.count
     }
     
-    func categoryAt(index: Int) -> Category? {
+    func getCategory(at index: Int) -> Category? {
         guard index < categories.count else { return nil }
         return categories[index]
     }

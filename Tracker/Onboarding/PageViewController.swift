@@ -13,6 +13,8 @@ struct PageContent {
 }
 
 final class PageViewController: UIPageViewController {
+    var onFinish: (() -> Void)?
+    
     private let contents: [PageContent] = [
         .init(image: "onboardingImage.1", title: "Отслеживайте только то, что хотите"),
         .init(image: "onboardingImage.2", title: "Даже если это не литры воды и йога")
@@ -36,6 +38,11 @@ final class PageViewController: UIPageViewController {
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .ypBlack
         btn.layer.cornerRadius = 16
+        btn.addTarget(
+            self,
+            action: #selector(buttonTapped),
+            for: .touchUpInside
+        )
         return btn
     }()
     
@@ -58,7 +65,7 @@ final class PageViewController: UIPageViewController {
                 ContentViewController(
                     backgroundImage: UIImage(named: contents[.zero].image),
                     text: contents[.zero].title,
-                    curentPage: .zero
+                    currentPage: .zero
                 )
             ],
             direction: .forward,
@@ -82,6 +89,14 @@ final class PageViewController: UIPageViewController {
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
+    
+    @objc private func buttonTapped() {
+        onFinish?()
+        
+        let tabBar = TabBarController()
+        tabBar.modalPresentationStyle = .fullScreen
+        self.present(tabBar, animated: true)
+    }
 }
 
 extension PageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
@@ -89,10 +104,9 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
         _ pageViewController: UIPageViewController,
         viewControllerBefore viewController: UIViewController
     ) -> UIViewController? {
-        //возвращаем предыдущий (относительно переданного viewController) дочерний контроллер
         guard let vc = viewController as? ContentViewController else { return nil }
         
-        let previousIndex = vc.curentPage - 1
+        let previousIndex = vc.currentPage - 1
         
         guard previousIndex >= 0 else {
             return nil
@@ -101,7 +115,7 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
         return ContentViewController(
             backgroundImage: UIImage(named: contents[previousIndex].image),
             text: contents[previousIndex].title,
-            curentPage: previousIndex
+            currentPage: previousIndex
         )
     }
     
@@ -109,10 +123,9 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
         _ pageViewController: UIPageViewController,
         viewControllerAfter viewController: UIViewController
     ) -> UIViewController? {
-       //возвращаем следующий (относительно переданного viewController) дочерний контроллер
         guard let vc = viewController as? ContentViewController else { return nil }
         
-        let nextIndex = vc.curentPage + 1
+        let nextIndex = vc.currentPage + 1
         
         guard nextIndex < contents.count else {
             return nil
@@ -121,7 +134,7 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
         return ContentViewController(
             backgroundImage: UIImage(named: contents[nextIndex].image),
             text: contents[nextIndex].title,
-            curentPage: nextIndex
+            currentPage: nextIndex
         )
     }
     
@@ -135,6 +148,6 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
               let currentVC = pageViewController.viewControllers?.first as? ContentViewController
         else { return }
         
-        pageControl.currentPage = currentVC.curentPage
+        pageControl.currentPage = currentVC.currentPage
     }
 }

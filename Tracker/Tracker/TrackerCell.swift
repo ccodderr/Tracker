@@ -171,10 +171,8 @@ final class TrackerCell: UICollectionViewCell {
 }
 
 final class TextSectionHeader: UICollectionReusableView {
-    // Идентификатор для повторного использования хедера
     static let reuseIdentifier = "TextSectionHeader"
     
-    // Текстовая метка для отображения заголовка секции
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
@@ -196,10 +194,8 @@ final class TextSectionHeader: UICollectionReusableView {
     private func setupView() {
         backgroundColor = .systemBackground
         
-        // Добавляем текстовую метку в представление
         addSubview(titleLabel)
         
-        // Настраиваем констрейнты для метки
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
@@ -208,7 +204,6 @@ final class TextSectionHeader: UICollectionReusableView {
         ])
     }
     
-    // Метод для конфигурации заголовка
     func configure(with title: String) {
         titleLabel.text = title
     }
