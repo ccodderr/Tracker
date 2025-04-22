@@ -20,6 +20,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     var presenter: TrackersPresenterProtocol?
     private var categories: [TrackerCategory] = []
     private let trackerStore = TrackerStore()
+    private var visibleCategories: [TrackerCategory] = []
 
     private var currentDate: Date = Date() {
         didSet {
@@ -51,6 +52,16 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         return label
     }()
     
+    private let searchEmptyImageView = UIImageView(image: UIImage(named: "searchEmptyImage"))
+    
+    private let searchEmptyLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Ничего не найдено"
+        label.textColor = .ypBlack
+        label.font = .systemFont(ofSize: 12)
+        return label
+    }()
+    
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 16
@@ -78,6 +89,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         updateEmptyStateVisibility()
         presenter?.view = self
         presenter?.viewDidLoad()
+        searchBar.delegate = self
     }
 
 //   MARK: Private methods
@@ -109,6 +121,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
             searchBar,
             emptyStateImageView,
             emptyStateLabel,
+            searchEmptyImageView,
+            searchEmptyLabel,
             collectionView
         ].forEach {
             view.addSubview($0)
@@ -130,6 +144,14 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
             emptyStateLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyStateLabel.topAnchor.constraint(equalTo: emptyStateImageView.bottomAnchor, constant: 10),
             
+            searchEmptyImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            searchEmptyImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            searchEmptyImageView.widthAnchor.constraint(equalToConstant: 80),
+            searchEmptyImageView.heightAnchor.constraint(equalToConstant: 80),
+
+            searchEmptyLabel.topAnchor.constraint(equalTo: searchEmptyImageView.bottomAnchor, constant: 8),
+            searchEmptyLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            
             collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
@@ -138,23 +160,23 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     }
     
     private func updateEmptyStateVisibility() {
-        let isCollectionEmpty = categories.isEmpty
-        
-        if isCollectionEmpty {
-            emptyStateImageView.isHidden = false
-            emptyStateLabel.isHidden = false
-            collectionView.isHidden = true
-        } else {
-            emptyStateImageView.isHidden = true
-            emptyStateLabel.isHidden = true
-            collectionView.isHidden = false
-        }
+        let isFiltered = !(searchBar.text ?? "").isEmpty
+        let isEmpty = visibleCategories.isEmpty
+
+        emptyStateImageView.isHidden = isFiltered || !isEmpty
+        emptyStateLabel.isHidden = isFiltered || !isEmpty
+
+        searchEmptyImageView.isHidden = !isFiltered || !isEmpty
+        searchEmptyLabel.isHidden = !isFiltered || !isEmpty
+
+        collectionView.isHidden = isEmpty
     }
     
     func updateTrackers(
         _ categories: [TrackerCategory]
     ) {
         self.categories = categories
+        self.visibleCategories = categories
         updateEmptyStateVisibility()
         collectionView.reloadData()
     }
@@ -193,11 +215,11 @@ extension TrackersViewController: HabitCreationDelegate {
 
 extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+        visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return categories[section].trackers.count
+        visibleCategories[section].trackers.count
     }
     
     func collectionView(
@@ -213,7 +235,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
                 return UICollectionReusableView()
             }
             
-            let title = categories[indexPath.section].title
+            let title = visibleCategories[indexPath.section].title
             header.configure(with: title)
             
             return header
@@ -239,7 +261,8 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
             return UICollectionViewCell()
         }
         
-        let tracker = categories[indexPath.section].trackers[indexPath.row]
+        let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+
         
         let isCompleted = presenter?.isTrackerCompleted(tracker, date: currentDate) ?? false
         let isEditable = presenter?.isEditableDate(currentDate) ?? false
@@ -266,5 +289,39 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         return CGSize(width: collectionView.frame.width / 2 - 32, height: 148)
+    }
+}
+
+extension TrackersViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        guard !searchText.isEmpty else {
+            visibleCategories = categories
+            updateEmptyStateVisibility()
+            collectionView.reloadData()
+            return
+        }
+
+        visibleCategories = categories.compactMap { category in
+            let filteredTrackers = category.trackers.filter {
+                $0.title.lowercased().contains(searchText.lowercased())
+            }
+            return filteredTrackers.isEmpty ? nil : TrackerCategory(title: category.title, trackers: filteredTrackers)
+        }
+        
+        updateEmptyStateVisibility()
+        collectionView.reloadData()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        visibleCategories = categories
+        updateEmptyStateVisibility()
+        collectionView.reloadData()
     }
 }
