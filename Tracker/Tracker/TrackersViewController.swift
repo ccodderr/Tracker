@@ -13,6 +13,7 @@ protocol TrackersViewControllerProtocol: AnyObject {
         _ categories: [TrackerCategory]
     )
     func reloadTrackers()
+    func presentEditScreen(for tracker: Tracker)
 }
 
 final class TrackersViewController: UIViewController, TrackersViewControllerProtocol {
@@ -198,9 +199,45 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         currentDate = sender.date
         sender.removeFromSuperview()
     }
+    
+    func presentEditScreen(for tracker: Tracker) {
+        let type: TrackerType = tracker.schedule.isEmpty
+        ? .irregularEvent
+        : .habit
+        
+        let editVC = HabitCreationViewController(
+            trackerType: type,
+            tracker: tracker
+        )
+        editVC.delegate = self
+        present(editVC, animated: true)
+    }
+    
+    private func presentDeleteAlert(for tracker: Tracker) {
+        let alert = UIAlertController(
+            title: "Уверены что хотите удалить трекер?",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+
+        let deleteAction = UIAlertAction(title: .localized.localized.deleteTitle, style: .destructive) { [weak self] _ in
+            self?.presenter?.deleteTracker(tracker)
+        }
+
+        let cancelAction = UIAlertAction(title: .localized.localized.cancelTitle, style: .cancel, handler: nil)
+
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 extension TrackersViewController: HabitCreationDelegate {
+    func didUpdate(_ tracker: Tracker) {
+        presenter?.updateTracker(tracker)
+    }
+    
     func didCreate(_ habit: Tracker) {
         presenter?.addTracker(habit)
     }
@@ -289,6 +326,43 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         return CGSize(width: collectionView.frame.width / 2 - 32, height: 148)
+    }
+}
+
+// MARK: - TrackersViewController: contextMenuConfiguration
+extension TrackersViewController: UICollectionViewDelegate {
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        
+        guard indexPath.section < visibleCategories.count,
+              indexPath.row < visibleCategories[indexPath.section].trackers.count else {
+            return nil
+        }
+        
+        let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
+
+        return UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: nil
+        ) { _ in
+            let pinTitle = tracker.isPinned ? "Открепить" : "Закрепить"
+            let pinAction = UIAction(title: pinTitle) { [weak self] _ in
+                self?.presenter?.togglePin(for: tracker)
+            }
+
+            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+                self?.presenter?.editTracker(tracker)
+            }
+
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                self?.presentDeleteAlert(for: tracker)
+            }
+
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        }
     }
 }
 

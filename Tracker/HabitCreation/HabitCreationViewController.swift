@@ -9,6 +9,7 @@ import UIKit
 
 protocol HabitCreationDelegate: AnyObject {
     func didCreate(_ habit: Tracker)
+    func didUpdate(_ tracker: Tracker)
 }
 
 final class HabitCreationViewController: UIViewController {
@@ -133,6 +134,7 @@ final class HabitCreationViewController: UIViewController {
     
     // MARK: - Data
     private let trackerType: TrackerType
+    private let tracker: Tracker?
     private let spacing: CGFloat = 5
     private var selectedSchedule: [Weekdays] = []
     private var selectedEmojiIndex: IndexPath?
@@ -145,8 +147,9 @@ final class HabitCreationViewController: UIViewController {
     
     // MARK: - Lifecycle
     
-    init(trackerType: TrackerType) {
+    init(trackerType: TrackerType, tracker: Tracker? = nil) {
         self.trackerType = trackerType
+        self.tracker = tracker
         self.titleLabel = {
             let label = UILabel()
             label.text = trackerType == .habit
@@ -170,6 +173,11 @@ final class HabitCreationViewController: UIViewController {
         setupUI()
         setupConstraints()
         updateCreateButtonState()
+        
+        if let tracker = tracker {
+            populateFields(with: tracker)
+            createButton.setTitle("Сохранить", for: .normal)
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -281,6 +289,35 @@ final class HabitCreationViewController: UIViewController {
         return CGFloat(75 * section)
     }
     
+    private func populateFields(with tracker: Tracker) {
+        trackerNameTextField.text = tracker.title
+        
+        if let index = emojis.firstIndex(of: tracker.emoji) {
+            selectedEmojiIndex = IndexPath(item: index, section: 0)
+            emojiCollectionView.selectItem(
+                at: selectedEmojiIndex,
+                animated: false,
+                scrollPosition: []
+            )
+        }
+
+        if let index = colors.firstIndex(where: { $0.hexString() == tracker.color }) {
+            selectedColorIndex = IndexPath(item: index, section: 0)
+            colorCollectionView.selectItem(
+                at: selectedColorIndex,
+                animated: false,
+                scrollPosition: []
+            )
+        }
+
+        selectedCategory = tracker.category
+        selectedSchedule = tracker.schedule
+
+        tableView.reloadData()
+        updateCreateButtonState()
+    }
+
+    
     private func updateCreateButtonState() {
         let isFormFilled: Bool
         
@@ -308,39 +345,44 @@ final class HabitCreationViewController: UIViewController {
     
     @objc private func create() {
         guard let selectedCategory = selectedCategory else { return }
-        
+
         let scheduleDays = selectedSchedule
             .compactMap { Weekdays(rawValue: $0.rawValue) }
-        
-        // Выбор эмоджи
+
         let selectedEmoji: String
         if let index = selectedEmojiIndex {
             selectedEmoji = emojis[index.item]
         } else {
-            selectedEmoji = "📈"
+            selectedEmoji = tracker?.emoji ?? "📈"
         }
-        
-        // Выбор цвета
+
         let selectedColor: UIColor
         if let colorIndex = selectedColorIndex {
             selectedColor = colors[colorIndex.item]
         } else {
-            selectedColor = colors.first ?? .red
+            selectedColor = UIColor(hex: tracker?.color ?? "") ?? colors.first ?? .red
         }
-        
-        delegate?.didCreate(
-            .init(
-                id: UUID(),
-                title: trackerNameTextField.text ?? "",
-                color: selectedColor.hexString(),
-                emoji: selectedEmoji,
-                schedule: scheduleDays,
-                explicitDate: trackerType == .habit ? nil : Date(),
-                category: selectedCategory
-            )
+
+        let trackerToPass = Tracker(
+            id: tracker?.id ?? UUID(),
+            title: trackerNameTextField.text ?? "",
+            color: selectedColor.hexString(),
+            emoji: selectedEmoji,
+            schedule: scheduleDays,
+            explicitDate: trackerType == .habit ? nil : Date(),
+            category: selectedCategory,
+            isPinned: tracker?.isPinned ?? false
         )
+
+        if tracker != nil {
+            delegate?.didUpdate(trackerToPass)
+        } else {
+            delegate?.didCreate(trackerToPass)
+        }
+
         dismiss(animated: true)
     }
+
     
     @objc private func cancelButtonTapped() {
         dismiss(animated: true, completion: nil)

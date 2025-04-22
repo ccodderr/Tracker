@@ -17,17 +17,21 @@ protocol TrackersPresenterProtocol: AnyObject {
     func isTrackerCompleted(_ tracker: Tracker, date: Date) -> Bool
     func isEditableDate(_ date: Date) -> Bool
     func getCompletedTrackerCount(_ tracker: Tracker) -> Int
+    func togglePin(for tracker: Tracker)
+    func editTracker(_ tracker: Tracker)
+    func deleteTracker(_ tracker: Tracker)
+    func updateTracker(_ tracker: Tracker)
 }
 
 // MARK: - Presenter
 final class TrackersPresenter: TrackersPresenterProtocol {
-    
     weak var view: (any TrackersViewControllerProtocol)?
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private let trackerStore: TrackerStore
     private let recordStore: TrackerRecordStore
     private var currentDate: Date = Date()
+    private var pinnedTrackers: [Tracker] = []
     
     init(
         trackerStore: TrackerStore = TrackerStore(),
@@ -48,33 +52,52 @@ final class TrackersPresenter: TrackersPresenterProtocol {
         return categories
     }
     
+    func togglePin(for tracker: Tracker) {
+        trackerStore.updatePinState(for: tracker, isPinned: !tracker.isPinned)
+        
+        let updatedTrackers = trackerStore.trackers
+        categories = categorize(trackers: updatedTrackers)
+        dateChanged(to: currentDate)
+    }
+    
+    func editTracker(_ tracker: Tracker) {
+        view?.presentEditScreen(for: tracker)
+    }
+    
+    func deleteTracker(_ tracker: Tracker) {
+        guard let object = try? trackerStore.fetchTrackerCoreData(by: tracker.id) else { return }
+        
+        trackerStore.delete(object)
+    }
+    
+    func updateTracker(_ tracker: Tracker) {
+        try? trackerStore.updateTracker(tracker)
+    }
+
     private func categorize(trackers: [Tracker]) -> [TrackerCategory] {
-        var categoriesDict: [UUID: [Tracker]] = [:]
-        
+        var categoriesDict: [String: [Tracker]] = [:]
+        var pinned: [Tracker] = []
+
         for tracker in trackers {
-            let categoryId = tracker.category.id ?? .init()
-            
-            if categoriesDict[categoryId] == nil {
-                categoriesDict[categoryId] = [tracker]
+            if tracker.isPinned {
+                pinned.append(tracker)
             } else {
-                categoriesDict[categoryId]?.append(tracker)
+                let categoryTitle = tracker.category.title ?? "Без категории"
+                categoriesDict[categoryTitle, default: []].append(tracker)
             }
         }
-        
-        var result: [TrackerCategory] = []
-        
-        for (_, categoryTrackers) in categoriesDict {
-            if let firstTracker = categoryTrackers.first {
-                let category = TrackerCategory(
-                    title: firstTracker.category.title ?? "",
-                    trackers: categoryTrackers
-                )
-                
-                result.append(category)
-            }
+
+        var categories: [TrackerCategory] = []
+
+        if !pinned.isEmpty {
+            categories.append(TrackerCategory(title: "Закреплённые", trackers: pinned))
         }
-        
-        return result
+
+        for (title, trackers) in categoriesDict {
+            categories.append(TrackerCategory(title: title, trackers: trackers))
+        }
+
+        return categories
     }
     
     func isEditableDate(_ date: Date) -> Bool {

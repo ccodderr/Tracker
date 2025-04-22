@@ -15,4 +15,5 @@ struct Tracker: Identifiable {
     let schedule: [Weekdays]
     let explicitDate: Date?
     let category: CategoryCoreData
+    var isPinned: Bool = false
 }

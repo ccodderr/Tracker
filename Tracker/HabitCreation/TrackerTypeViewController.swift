@@ -82,14 +82,20 @@ final class TrackerTypeViewController: UIViewController {
     }
     
     @objc private func habitButtonTapped() {
-        let trackerVC = HabitCreationViewController(trackerType: .habit)
+        let trackerVC = HabitCreationViewController(
+            trackerType: .habit,
+            tracker: nil
+        )
         trackerVC.modalPresentationStyle = .pageSheet
         trackerVC.delegate = delegate
         present(trackerVC, animated: true)
     }
     
     @objc private func eventButtonTapped() {
-        let trackerVC = HabitCreationViewController(trackerType: .irregularEvent)
+        let trackerVC = HabitCreationViewController(
+            trackerType: .irregularEvent,
+            tracker: nil
+        )
         trackerVC.modalPresentationStyle = .pageSheet
         trackerVC.delegate = delegate
         present(trackerVC, animated: true)
