@@ -26,7 +26,7 @@ final class EditCategoryViewController: UIViewController {
     private let textField: UITextField = {
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.placeholder = "Введите название категории"
+        textField.placeholder = .localized.localized.categoryInputPlaceholder
         textField.leftView = UIView(frame: .init(origin: .zero, size: .init(width: 15, height: 1)))
         textField.leftViewMode = .always
         textField.layer.cornerRadius = 16
@@ -38,7 +38,7 @@ final class EditCategoryViewController: UIViewController {
     private let doneButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(.localized.localized.doneTitle, for: .normal)
         button.backgroundColor = .ypBlack
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
@@ -102,12 +102,12 @@ final class EditCategoryViewController: UIViewController {
     
     private func configureTitleAndText() {
         if isCategoryEditing {
-            titleLabel.text = "Редактирование категории"
+            titleLabel.text = .localized.localized.categoryEditTitle
             if let index = categoryIndex, let category = viewModel.getCategory(at: index) {
                 textField.text = category.title
             }
         } else {
-            titleLabel.text = "Новая категория"
+            titleLabel.text = .localized.localized.newCategoryTitle
         }
         
         updateDoneButtonState()

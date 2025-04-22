@@ -15,7 +15,7 @@ final class ScheduleViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
+        label.text = .localized.localized.scheduleTitle
         label.textColor = .black
         label.font = .systemFont(ofSize: 16, weight: .medium)
         return label
@@ -33,7 +33,7 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let doneButton = UIButton()
-        doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitle(.localized.localized.doneTitle, for: .normal)
         doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
         doneButton.backgroundColor = .black
         doneButton.setTitleColor(.white, for: .normal)
@@ -115,7 +115,7 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         
         let day = weekdays[indexPath.row]
         
-        cell.configure(day: day.rawValue, isSelected: selectedDays.contains(day))
+        cell.configure(day: day.localized, isSelected: selectedDays.contains(day))
         
         cell.switchChanged = { [weak self] isOn in
             guard let self else { return }

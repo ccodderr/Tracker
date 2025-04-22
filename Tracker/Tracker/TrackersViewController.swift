@@ -30,7 +30,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
-        searchBar.placeholder = "Поиск"
+        searchBar.placeholder = .localized.localized.searchTitle
         searchBar.layer.cornerRadius = 10
         searchBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
         
@@ -46,7 +46,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12)
-        label.text = "Что будем отслеживать?"
+        label.text = .localized.localized.emptyStateTitle
         label.textColor = .ypBlack
         return label
     }()
@@ -82,7 +82,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
 
 //   MARK: Private methods
     private func setupNavigationBar() {
-        navigationItem.title = "Трекеры"
+        navigationItem.title = .localized.localized.trackersTitle
         
         let titleAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.boldSystemFont(ofSize: 34),

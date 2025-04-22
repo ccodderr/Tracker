@@ -27,7 +27,7 @@ final class CategoryListViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Категория"
+        label.text = .localized.localized.categoryTitle
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
         return label
@@ -46,7 +46,7 @@ final class CategoryListViewController: UIViewController {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Привычки и события можно объединить по смыслу"
+        label.text = .localized.localized.categoryEmptyState
         label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = .ypBlack
         label.textAlignment = .center
@@ -72,7 +72,7 @@ final class CategoryListViewController: UIViewController {
     private let addButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Добавить категорию", for: .normal)
+        button.setTitle(.localized.localized.categoryAddButton, for: .normal)
         button.backgroundColor = .ypBlack
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16
@@ -183,11 +183,11 @@ final class CategoryListViewController: UIViewController {
             preferredStyle: .actionSheet
         )
 
-        let deleteAction = UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+        let deleteAction = UIAlertAction(title: .localized.localized.deleteTitle, style: .destructive) { [weak self] _ in
             self?.viewModel.deleteCategory(at: index)
         }
 
-        let cancelAction = UIAlertAction(title: "Отменить", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: .localized.localized.cancelTitle, style: .cancel, handler: nil)
 
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
@@ -231,10 +231,10 @@ extension CategoryListViewController: UITableViewDataSource {
     ) -> UIContextMenuConfiguration? {
         let provider: UIContextMenuActionProvider = { _ in
             UIMenu(title: "", children: [
-                UIAction(title: "Редактировать") { [weak self] _ in
+                UIAction(title: .localized.localized.editTitle) { [weak self] _ in
                     self?.editCategory(at: indexPath)
                 },
-                UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                UIAction(title: .localized.localized.deleteTitle, attributes: .destructive) { [weak self] _ in
                     self?.presentDeleteAlert(for: indexPath.row)
                 }
             ])

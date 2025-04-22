@@ -16,8 +16,8 @@ final class PageViewController: UIPageViewController {
     var onFinish: (() -> Void)?
     
     private let contents: [PageContent] = [
-        .init(image: "onboardingImage.1", title: "Отслеживайте только то, что хотите"),
-        .init(image: "onboardingImage.2", title: "Даже если это не литры воды и йога")
+        .init(image: "onboardingImage.1", title: .localized.localized.onboardingTitle1),
+        .init(image: "onboardingImage.2", title: .localized.localized.onboardingTitle2)
     ]
     
     private lazy var pageControl: UIPageControl = {
@@ -34,7 +34,7 @@ final class PageViewController: UIPageViewController {
     
     private lazy var button: UIButton = {
         let btn = UIButton()
-        btn.setTitle("Вот это технологии!", for: .normal)
+        btn.setTitle(.localized.localized.onboardingButtonTitle, for: .normal)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .ypBlack
         btn.layer.cornerRadius = 16

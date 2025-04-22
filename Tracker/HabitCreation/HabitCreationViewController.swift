@@ -20,7 +20,7 @@ final class HabitCreationViewController: UIViewController {
     
     private lazy var trackerNameTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = .localized.localized.trackerNamePlaceholder
         textField.leftView = UIView(frame: .init(origin: .zero, size: .init(width: 15, height: 1)))
         textField.leftViewMode = .always
         textField.layer.cornerRadius = 16
@@ -43,7 +43,7 @@ final class HabitCreationViewController: UIViewController {
     
     private let emojiLabel: UILabel = {
         let label = UILabel()
-        label.text = "Emoji"
+        label.text = .localized.localized.emojiTitle
         label.font = .systemFont(ofSize: 19, weight: .bold)
         return label
     }()
@@ -67,7 +67,7 @@ final class HabitCreationViewController: UIViewController {
     
     private let colorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Цвет"
+        label.text = .localized.localized.colorTitle
         label.font = UIFont.systemFont(ofSize: 19, weight: .bold)
         return label
     }()
@@ -98,7 +98,7 @@ final class HabitCreationViewController: UIViewController {
     
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Отменить", for: .normal)
+        button.setTitle(.localized.localized.cancelTitle, for: .normal)
         button.setTitleColor(.red, for: .normal)
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.red.cgColor
@@ -114,7 +114,7 @@ final class HabitCreationViewController: UIViewController {
     
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Создать", for: .normal)
+        button.setTitle(.localized.localized.createTitle, for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = .gray
         button.layer.cornerRadius = 12
@@ -149,7 +149,9 @@ final class HabitCreationViewController: UIViewController {
         self.trackerType = trackerType
         self.titleLabel = {
             let label = UILabel()
-            label.text = trackerType == .habit ? "Новая привычка" : "Новое нерегулярное событие"
+            label.text = trackerType == .habit
+            ? .localized.localized.newHabitTitle
+            : .localized.localized.newIrregularEventTitle
             label.textColor = .black
             label.font = .systemFont(ofSize: 16)
             label.textAlignment = .center
@@ -366,7 +368,7 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
 
         if indexPath.row == 0 {
             cell.configure(
-                title: "Категория",
+                title: .localized.localized.categoryTitle,
                 value: selectedCategory?.title,
                 isLastCell: isLastCell,
                 isSingleCell: isSingleCell
@@ -374,7 +376,7 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
         } else {
             let selectedScheduleString = selectedSchedule.map { $0.rawValue }.joined(separator: ", ")
             
-            cell.configure(title: "Расписание", value: selectedScheduleString, isLastCell: isLastCell, isSingleCell: isSingleCell)
+            cell.configure(title: .localized.localized.scheduleTitle, value: selectedScheduleString, isLastCell: isLastCell, isSingleCell: isSingleCell)
         }
         
         return cell

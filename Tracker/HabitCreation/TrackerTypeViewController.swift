@@ -15,20 +15,20 @@ final class TrackerTypeViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Создание трекера"
+        label.text = .localized.localized.trackerCreationTitle
         label.textColor = .black
         label.font = .systemFont(ofSize: 16, weight: .medium)
         return label
     }()
     
     private lazy var habitButton: UIButton = {
-        let button = createButton(withTitle: "Привычка")
+        let button = createButton(withTitle: .localized.localized.trackerTypeHabit)
         button.addTarget(self, action: #selector(habitButtonTapped), for: .touchUpInside)
         return button
     }()
     
     private lazy var eventButton: UIButton = {
-        let button = createButton(withTitle: "Нерегулярные событие")
+        let button = createButton(withTitle: .localized.localized.trackerTypeIrregularEvent)
         button.addTarget(self, action: #selector(eventButtonTapped), for: .touchUpInside)
         return button
     }()
