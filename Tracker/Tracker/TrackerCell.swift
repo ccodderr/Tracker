@@ -180,7 +180,7 @@ final class TextSectionHeader: UICollectionReusableView {
     }
     
     private func setupView() {
-        backgroundColor = .systemBackground
+        backgroundColor = .ypWhite
         
         addSubview(titleLabel)
         

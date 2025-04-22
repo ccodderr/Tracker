@@ -72,7 +72,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: "TrackerCell")
         collectionView.dataSource = self
         collectionView.delegate = self
-        
+        collectionView.backgroundColor = .ypWhite
         collectionView.register(
             TextSectionHeader.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -95,6 +95,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
 
 //   MARK: Private methods
     private func setupNavigationBar() {
+        navigationController?.toolbar.backgroundColor = .ypWhite
         navigationItem.title = .localized.localized.trackersTitle
         
         let titleAttributes: [NSAttributedString.Key: Any] = [

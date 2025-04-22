@@ -22,7 +22,7 @@ final class CategoryCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.image = UIImage(systemName: "checkmark")
-        imageView.tintColor = .systemBlue
+        imageView.tintColor = .ypBlue
         imageView.isHidden = true
         return imageView
     }()
@@ -40,7 +40,7 @@ final class CategoryCell: UITableViewCell {
     // MARK: - Setup
     private func setupViews() {
         selectionStyle = .none
-        contentView.backgroundColor = .ypBackground.withAlphaComponent(0.3)
+        contentView.backgroundColor = .ypBackground
         
         contentView.addSubview(titleLabel)
         contentView.addSubview(checkmarkImageView)

@@ -10,7 +10,7 @@ import UIKit
 final class TabBarController: UITabBarController {
     init() {
         super.init(nibName: nil, bundle: nil)
-        tabBar.backgroundColor = .white
+        tabBar.backgroundColor = .ypWhite
         tabBar.barTintColor = .gray
         tabBar.tintColor = .ypBlue
         tabBar.isTranslucent = false

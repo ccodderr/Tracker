@@ -16,20 +16,28 @@ final class TrackerTypeViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = .localized.localized.trackerCreationTitle
-        label.textColor = .black
+        label.textColor = .ypBlack
         label.font = .systemFont(ofSize: 16, weight: .medium)
         return label
     }()
     
     private lazy var habitButton: UIButton = {
         let button = createButton(withTitle: .localized.localized.trackerTypeHabit)
-        button.addTarget(self, action: #selector(habitButtonTapped), for: .touchUpInside)
+        button.addTarget(
+            self,
+            action: #selector(habitButtonTapped),
+            for: .touchUpInside
+        )
         return button
     }()
     
     private lazy var eventButton: UIButton = {
         let button = createButton(withTitle: .localized.localized.trackerTypeIrregularEvent)
-        button.addTarget(self, action: #selector(eventButtonTapped), for: .touchUpInside)
+        button.addTarget(
+            self,
+            action: #selector(eventButtonTapped),
+            for: .touchUpInside
+        )
         return button
     }()
     
@@ -41,7 +49,7 @@ final class TrackerTypeViewController: UIViewController {
     }
     
     private func setupView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         view.layer.cornerRadius = 20
         view.clipsToBounds = true
         
@@ -74,9 +82,9 @@ final class TrackerTypeViewController: UIViewController {
     private func createButton(withTitle title: String) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .black
+        button.backgroundColor = .ypBlack
         button.layer.cornerRadius = 12
         return button
     }

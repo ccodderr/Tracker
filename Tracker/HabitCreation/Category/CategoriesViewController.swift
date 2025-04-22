@@ -19,7 +19,7 @@ final class CategoryListViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.reuseIdentifier)
         tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .ypWhite
         tableView.layer.cornerRadius = 16
         return tableView
     }()
@@ -29,6 +29,7 @@ final class CategoryListViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = .localized.localized.categoryTitle
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.textColor = .ypBlack
         label.textAlignment = .center
         return label
     }()
@@ -74,7 +75,7 @@ final class CategoryListViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle(.localized.localized.categoryAddButton, for: .normal)
         button.backgroundColor = .ypBlack
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.layer.cornerRadius = 16
         return button
     }()
@@ -101,7 +102,7 @@ final class CategoryListViewController: UIViewController {
     
     // MARK: - Setup
     private func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         view.addSubview(titleLabel)
         view.addSubview(tableView)

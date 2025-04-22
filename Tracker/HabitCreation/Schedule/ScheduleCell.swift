@@ -13,6 +13,7 @@ final class ScheduleCell: UITableViewCell {
     private lazy var dayLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16)
+        label.textColor = .ypBlack
         return label
     }()
     
@@ -21,7 +22,10 @@ final class ScheduleCell: UITableViewCell {
         toggleSwitch.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         toggleSwitch.isOn = false
         toggleSwitch.isEnabled = true
-        toggleSwitch.onTintColor = .blue
+        toggleSwitch.onTintColor = .ypBlue
+        toggleSwitch.backgroundColor = .ypLightGray
+        toggleSwitch.layer.cornerRadius = toggleSwitch.frame.height / 2
+        toggleSwitch.thumbTintColor = .white
         return toggleSwitch
     }()
     
@@ -48,7 +52,7 @@ final class ScheduleCell: UITableViewCell {
     
     private func setupUI() {
         selectionStyle = .none
-        backgroundColor = UIColor(white: 0.95, alpha: 1)
+        backgroundColor = .ypBackground
         
         contentView.addSubview(stackView)
         

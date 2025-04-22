@@ -20,6 +20,7 @@ final class EditCategoryViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textAlignment = .center
+        label.textColor = .ypBlack
         return label
     }()
     
@@ -30,7 +31,7 @@ final class EditCategoryViewController: UIViewController {
         textField.leftView = UIView(frame: .init(origin: .zero, size: .init(width: 15, height: 1)))
         textField.leftViewMode = .always
         textField.layer.cornerRadius = 16
-        textField.backgroundColor = .ypLightGray.withAlphaComponent(0.3)
+        textField.backgroundColor = .ypBackground
         textField.clearButtonMode = .whileEditing
         return textField
     }()
@@ -40,7 +41,7 @@ final class EditCategoryViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle(.localized.localized.doneTitle, for: .normal)
         button.backgroundColor = .ypBlack
-        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.ypWhite, for: .normal)
         button.layer.cornerRadius = 16
         return button
     }()
@@ -72,7 +73,7 @@ final class EditCategoryViewController: UIViewController {
     
     // MARK: - Setup
     private func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         view.addSubview(titleLabel)
         view.addSubview(textField)
@@ -117,6 +118,7 @@ final class EditCategoryViewController: UIViewController {
         let isTextEmpty = textField.text?.isEmpty ?? true
         doneButton.isEnabled = !isTextEmpty
         doneButton.backgroundColor = isTextEmpty ? .ypGray : .ypBlack
+        doneButton.setTitleColor(isTextEmpty ? .white : .ypWhite, for: .normal)
     }
     
     // MARK: - Actions

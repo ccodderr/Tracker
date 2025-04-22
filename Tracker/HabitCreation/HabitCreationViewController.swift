@@ -22,10 +22,11 @@ final class HabitCreationViewController: UIViewController {
     private lazy var trackerNameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = .localized.localized.trackerNamePlaceholder
+        textField.tintColor = .ypGray
         textField.leftView = UIView(frame: .init(origin: .zero, size: .init(width: 15, height: 1)))
         textField.leftViewMode = .always
         textField.layer.cornerRadius = 16
-        textField.backgroundColor = .ypLightGray.withAlphaComponent(0.3)
+        textField.backgroundColor = .ypBackground
         textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         return textField
     }()
@@ -36,7 +37,7 @@ final class HabitCreationViewController: UIViewController {
         tableView.delegate = self
         tableView.register(TrackerOptionCell.self, forCellReuseIdentifier: "cell")
         tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = .ypLightGray
+        tableView.backgroundColor = .ypBackground
         tableView.layer.cornerRadius = 16
         tableView.clipsToBounds = true
         return tableView
@@ -60,7 +61,7 @@ final class HabitCreationViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .ypWhite
         collectionView.register(EmojiCell.self, forCellWithReuseIdentifier: EmojiCell.identifier)
         collectionView.isScrollEnabled = false
         return collectionView
@@ -91,7 +92,7 @@ final class HabitCreationViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .ypWhite
         collectionView.register(ColorCell.self, forCellWithReuseIdentifier: ColorCell.identifier)
         collectionView.isScrollEnabled = false
         return collectionView
@@ -100,11 +101,11 @@ final class HabitCreationViewController: UIViewController {
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(.localized.localized.cancelTitle, for: .normal)
-        button.setTitleColor(.red, for: .normal)
+        button.setTitleColor(.ypRed, for: .normal)
         button.layer.borderWidth = 1
-        button.layer.borderColor = UIColor.red.cgColor
+        button.layer.borderColor = UIColor.ypRed.cgColor
         button.layer.cornerRadius = 12
-        button.backgroundColor = .white
+        button.backgroundColor = .ypWhite
         button.addTarget(
             self,
             action: #selector(cancelButtonTapped),
@@ -116,8 +117,8 @@ final class HabitCreationViewController: UIViewController {
     private lazy var createButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(.localized.localized.createTitle, for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = .gray
+        button.setTitleColor(.ypWhite, for: .normal)
+        button.backgroundColor = .ypGray
         button.layer.cornerRadius = 12
         button.addTarget(self, action: #selector(create), for: .touchUpInside)
         return button
@@ -155,7 +156,7 @@ final class HabitCreationViewController: UIViewController {
             label.text = trackerType == .habit
             ? .localized.localized.newHabitTitle
             : .localized.localized.newIrregularEventTitle
-            label.textColor = .black
+            label.textColor = .ypBlack
             label.font = .systemFont(ofSize: 16)
             label.textAlignment = .center
             return label
@@ -189,7 +190,7 @@ final class HabitCreationViewController: UIViewController {
     // MARK: - UI Setup
     
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         scrollView.isScrollEnabled = true
         scrollView.showsVerticalScrollIndicator = false
         [
@@ -328,6 +329,7 @@ final class HabitCreationViewController: UIViewController {
         }
         
         createButton.backgroundColor = isFormFilled ? .ypBlack : .gray
+        createButton.setTitleColor(isFormFilled ? .ypWhite : .white, for: .normal)
         createButton.isEnabled = isFormFilled
     }
     

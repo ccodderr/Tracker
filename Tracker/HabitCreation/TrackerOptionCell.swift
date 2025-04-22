@@ -17,7 +17,7 @@ final class TrackerOptionCell: UITableViewCell {
     
     private let arrowImageView: UIImageView = {
         let imageView = UIImageView(image: UIImage(systemName: "chevron.right"))
-        imageView.tintColor = .gray
+        imageView.tintColor = .ypGray
         return imageView
     }()
     
@@ -42,7 +42,7 @@ final class TrackerOptionCell: UITableViewCell {
     }
     
     private func setupUI() {
-        contentView.backgroundColor = .ypLightGray.withAlphaComponent(0.3)
+        contentView.backgroundColor = .ypBackground
 
         addSubview(stackView)
         
