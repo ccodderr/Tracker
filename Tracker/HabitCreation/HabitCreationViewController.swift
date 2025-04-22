@@ -134,10 +134,10 @@ final class HabitCreationViewController: UIViewController {
     // MARK: - Data
     private let trackerType: TrackerType
     private let spacing: CGFloat = 5
-    private var selectedCategory: String?
     private var selectedSchedule: [Weekdays] = []
     private var selectedEmojiIndex: IndexPath?
     private var selectedColorIndex: IndexPath?
+    private var selectedCategory: CategoryCoreData?
     private var colorCollectionViewHeightConstraint: NSLayoutConstraint!
     private var emojiCollectionViewHeightConstraint: NSLayoutConstraint!
 
@@ -280,11 +280,14 @@ final class HabitCreationViewController: UIViewController {
     }
     
     private func updateCreateButtonState() {
-        let isFormFilled = trackerType == .habit
-        ? !(trackerNameTextField.text ?? "").isEmpty && !selectedSchedule.isEmpty
-        : !(trackerNameTextField.text ?? "").isEmpty
+        let isFormFilled: Bool
         
-//      && selectedCategory != nil
+        if trackerType == .habit {
+            isFormFilled = !(trackerNameTextField.text ?? "").isEmpty && !selectedSchedule.isEmpty && selectedCategory != nil
+        } else {
+            isFormFilled = !(trackerNameTextField.text ?? "").isEmpty && selectedCategory != nil
+        }
+        
         createButton.backgroundColor = isFormFilled ? .ypBlack : .gray
         createButton.isEnabled = isFormFilled
     }
@@ -302,6 +305,8 @@ final class HabitCreationViewController: UIViewController {
     }
     
     @objc private func create() {
+        guard let selectedCategory = selectedCategory else { return }
+        
         let scheduleDays = selectedSchedule
             .compactMap { Weekdays(rawValue: $0.rawValue) }
         
@@ -328,7 +333,8 @@ final class HabitCreationViewController: UIViewController {
                 color: selectedColor.hexString(),
                 emoji: selectedEmoji,
                 schedule: scheduleDays,
-                explicitDate: trackerType == .habit ? nil : Date()
+                explicitDate: trackerType == .habit ? nil : Date(),
+                category: selectedCategory
             )
         )
         dismiss(animated: true)
@@ -359,7 +365,12 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
         let isSingleCell = totalRows == 1
 
         if indexPath.row == 0 {
-            cell.configure(title: "Категория", value: selectedCategory, isLastCell: isLastCell, isSingleCell: isSingleCell)
+            cell.configure(
+                title: "Категория",
+                value: selectedCategory?.title,
+                isLastCell: isLastCell,
+                isSingleCell: isSingleCell
+            )
         } else {
             let selectedScheduleString = selectedSchedule.map { $0.rawValue }.joined(separator: ", ")
             
@@ -375,6 +386,19 @@ extension HabitCreationViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        if indexPath.row == 0 {
+            let viewModel = CategoryListViewModel(
+                categoryStore: .init(),
+                selectedCategoryId: selectedCategory?.id
+            )
+            let categoryListVC = CategoryListViewController(viewModel: viewModel) { [weak self] category in
+                self?.selectedCategory = category
+                self?.updateCreateButtonState()
+            }
+            categoryListVC.modalPresentationStyle = .formSheet
+            present(categoryListVC, animated: true, completion: nil)
+        }
         
         if indexPath.row == 1 {
             let scheduleVC = ScheduleViewController(weekdays: Weekdays.allCases, selectedDays: selectedSchedule)

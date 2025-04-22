@@ -19,10 +19,13 @@ final class LaunchScreen: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let tabBarController = TabBarController()
-        tabBarController.modalPresentationStyle = .fullScreen
-        tabBarController.tabBar.backgroundColor = .white
-        self.present(tabBarController, animated: true)
+        let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
+        
+        if hasSeenOnboarding {
+            showMainInterface()
+        } else {
+            showOnboarding()
+        }
     }
     
     //    MARK: Methods
@@ -37,5 +40,26 @@ final class LaunchScreen: UIViewController {
             image.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             image.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+    }
+    
+    private func showOnboarding() {
+        let onboardingVC = PageViewController()
+        onboardingVC.modalPresentationStyle = .fullScreen
+        
+        onboardingVC.onFinish = { [weak self] in
+            guard let self = self else { return }
+            UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
+            self.dismiss(animated: true) {
+                self.showMainInterface()
+            }
+        }
+        
+        present(onboardingVC, animated: true)
+    }
+    
+    private func showMainInterface() {
+        let tabBarController = TabBarController()
+        tabBarController.modalPresentationStyle = .fullScreen
+        present(tabBarController, animated: true)
     }
 }

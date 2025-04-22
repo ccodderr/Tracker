@@ -7,11 +7,12 @@
 
 import UIKit
 
-struct Tracker: Identifiable, Codable {
+struct Tracker: Identifiable {
     let id: UUID
     let title: String
     let color: String
     let emoji: String
     let schedule: [Weekdays]
     let explicitDate: Date?
+    let category: CategoryCoreData
 }

@@ -71,6 +71,7 @@ final class TrackerStore: NSObject {
         trackerData.explictDate = tracker.explicitDate
         trackerData.color = tracker.color
         trackerData.schedule = tracker.schedule as NSObject
+        trackerData.category = tracker.category
     }
     
     private func tracker(from data: TrackerCoreData) -> Tracker? {
@@ -79,7 +80,8 @@ final class TrackerStore: NSObject {
             let title = data.title,
             let emoji = data.emoji,
             let color = data.color,
-            let schedule = data.schedule as? [Weekdays]
+            let schedule = data.schedule as? [Weekdays],
+            let category = data.category
         else { return nil }
         
         return Tracker(
@@ -88,7 +90,8 @@ final class TrackerStore: NSObject {
             color: color,
             emoji: emoji,
             schedule: schedule,
-            explicitDate: data.explictDate
+            explicitDate: data.explictDate,
+            category: category
         )
     }
 }
