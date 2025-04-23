@@ -19,6 +19,7 @@ final class TabBarController: UITabBarController {
         trackerViewController.presenter = TrackersPresenter()
         
         let trackerNavigationController = UINavigationController(rootViewController: trackerViewController)
+        
         trackerNavigationController.tabBarItem = UITabBarItem(
             title: .localized.localized.trackersTitle,
             image: UIImage(systemName: "record.circle.fill"),
@@ -27,13 +28,18 @@ final class TabBarController: UITabBarController {
         
         let statisticsViewController = StatisticsViewController()
         statisticsViewController.presenter = StatisticsPresenter()
-        statisticsViewController.tabBarItem = UITabBarItem(
+        
+        let statisticsNavigationController = UINavigationController(rootViewController: statisticsViewController)
+        
+        statisticsNavigationController.tabBarItem = UITabBarItem(
             title: .localized.localized.statisticsTitle,
             image: UIImage(systemName: "hare.fill"),
             selectedImage: nil
         )
         
-        self.viewControllers = [trackerNavigationController, statisticsViewController]
+        self.viewControllers = [
+            trackerNavigationController, statisticsNavigationController
+        ]
     }
     
     required init?(coder: NSCoder) {

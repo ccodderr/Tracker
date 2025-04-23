@@ -25,7 +25,6 @@
 		26E9016C2DB813D4004224B8 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E901332DB813D4004224B8 /* PageViewController.swift */; };
 		26E9016D2DB813D4004224B8 /* App + localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E901352DB813D4004224B8 /* App + localized.swift */; };
 		26E9016E2DB813D4004224B8 /* LocalizableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E9013C2DB813D4004224B8 /* LocalizableView.swift */; };
-		26E9016F2DB813D4004224B8 /* StatisticsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E9013E2DB813D4004224B8 /* StatisticsPresenter.swift */; };
 		26E901702DB813D4004224B8 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E9013F2DB813D4004224B8 /* StatisticsViewController.swift */; };
 		26E901712DB813D4004224B8 /* CategoryValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E901412DB813D4004224B8 /* CategoryValueTransformer.swift */; };
 		26E901722DB813D4004224B8 /* DaysValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E901422DB813D4004224B8 /* DaysValueTransformer.swift */; };
@@ -46,6 +45,8 @@
 		26E901812DB813D4004224B8 /* Library.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 26E901572DB813D4004224B8 /* Library.xcdatamodeld */; };
 		26E901822DB813D4004224B8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E901582DB813D4004224B8 /* SceneDelegate.swift */; };
 		26E901832DB813D4004224B8 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E901592DB813D4004224B8 /* TabBarController.swift */; };
+		26E901852DB8F8D0004224B8 /* StatisticsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E901842DB8F8C0004224B8 /* StatisticsCell.swift */; };
+		26E9018B2DB93410004224B8 /* StatisticsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E9018A2DB93407004224B8 /* StatisticsPresenter.swift */; };
 		3E7CBB47C45FC4741D7F420C /* Pods_Tracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C2C693B8F31C28FDF6F48E73 /* Pods_Tracker.framework */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +71,6 @@
 		26E901392DB813D4004224B8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		26E9013A2DB813D4004224B8 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		26E9013C2DB813D4004224B8 /* LocalizableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizableView.swift; sourceTree = "<group>"; };
-		26E9013E2DB813D4004224B8 /* StatisticsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsPresenter.swift; sourceTree = "<group>"; };
 		26E9013F2DB813D4004224B8 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
 		26E901412DB813D4004224B8 /* CategoryValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryValueTransformer.swift; sourceTree = "<group>"; };
 		26E901422DB813D4004224B8 /* DaysValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysValueTransformer.swift; sourceTree = "<group>"; };
@@ -93,6 +93,8 @@
 		26E901582DB813D4004224B8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		26E901592DB813D4004224B8 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		26E9015B2DB813D4004224B8 /* Library.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Library.xcdatamodel; sourceTree = "<group>"; };
+		26E901842DB8F8C0004224B8 /* StatisticsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCell.swift; sourceTree = "<group>"; };
+		26E9018A2DB93407004224B8 /* StatisticsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsPresenter.swift; sourceTree = "<group>"; };
 		54B8492BC24BCE61D513DF39 /* Pods-Tracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tracker.debug.xcconfig"; path = "Target Support Files/Pods-Tracker/Pods-Tracker.debug.xcconfig"; sourceTree = "<group>"; };
 		C2C693B8F31C28FDF6F48E73 /* Pods_Tracker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tracker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EEA40BDE15543C594EF85E0C /* Pods-Tracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tracker.release.xcconfig"; path = "Target Support Files/Pods-Tracker/Pods-Tracker.release.xcconfig"; sourceTree = "<group>"; };
@@ -192,7 +194,8 @@
 		26E901402DB813D4004224B8 /* Statistics */ = {
 			isa = PBXGroup;
 			children = (
-				26E9013E2DB813D4004224B8 /* StatisticsPresenter.swift */,
+				26E9018A2DB93407004224B8 /* StatisticsPresenter.swift */,
+				26E901842DB8F8C0004224B8 /* StatisticsCell.swift */,
 				26E9013F2DB813D4004224B8 /* StatisticsViewController.swift */,
 			);
 			path = Statistics;
@@ -411,14 +414,15 @@
 				26E9016C2DB813D4004224B8 /* PageViewController.swift in Sources */,
 				26E9016D2DB813D4004224B8 /* App + localized.swift in Sources */,
 				26E9016E2DB813D4004224B8 /* LocalizableView.swift in Sources */,
-				26E9016F2DB813D4004224B8 /* StatisticsPresenter.swift in Sources */,
 				26E901702DB813D4004224B8 /* StatisticsViewController.swift in Sources */,
+				26E901852DB8F8D0004224B8 /* StatisticsCell.swift in Sources */,
 				26E901712DB813D4004224B8 /* CategoryValueTransformer.swift in Sources */,
 				26E901722DB813D4004224B8 /* DaysValueTransformer.swift in Sources */,
 				26E901732DB813D4004224B8 /* Tracker.swift in Sources */,
 				26E901742DB813D4004224B8 /* TrackerCategory.swift in Sources */,
 				26E901752DB813D4004224B8 /* TrackerRecord.swift in Sources */,
 				26E901762DB813D4004224B8 /* TrackerType.swift in Sources */,
+				26E9018B2DB93410004224B8 /* StatisticsPresenter.swift in Sources */,
 				26E901772DB813D4004224B8 /* Weekdays.swift in Sources */,
 				26E901782DB813D4004224B8 /* CategoryStore.swift in Sources */,
 				26E901792DB813D4004224B8 /* TrackerRecordStore.swift in Sources */,
