@@ -6,11 +6,19 @@
 //
 
 import Testing
+import XCTest
+import SnapshotTesting
+@testable import Tracker
 
-struct TrackerTests {
-
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+final class TrackerTests: XCTestCase {
+    
+    func testViewController() {
+        let vc = TrackersViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.overrideUserInterfaceStyle = .light
+        
+        _ = nav.view
+        
+        assertSnapshot(of: nav, as: .image)
     }
-
 }
