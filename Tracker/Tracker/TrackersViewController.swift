@@ -43,6 +43,13 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         return searchBar
     }()
     
+    private lazy var filterButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Фильтры", for: .normal)
+        button.addTarget(self, action: #selector(filtersButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     private let emptyStateImageView = UIImageView(image: UIImage(resource: .emptyState))
     
     private lazy var emptyStateLabel: UILabel = {
@@ -73,6 +80,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .ypWhite
+        collectionView.layer.cornerRadius = 16
         collectionView.register(
             TextSectionHeader.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
@@ -91,6 +99,16 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         presenter?.view = self
         presenter?.viewDidLoad()
         searchBar.delegate = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        AnalyticsEvent.send(event: "open", screen: "Trackers")
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        AnalyticsEvent.send(event: "close", screen: "Trackers")
     }
 
 //   MARK: Private methods
@@ -193,6 +211,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         trackerVC.modalPresentationStyle = .pageSheet
         trackerVC.delegate = self
         present(trackerVC, animated: true)
+        AnalyticsEvent.send(event: "click", screen: "Trackers", item: "add_track")
     }
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -232,6 +251,10 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
 
         present(alert, animated: true, completion: nil)
     }
+    
+    @objc private func filtersButtonTapped() {
+        AnalyticsEvent.send(event: "click", screen: "Trackers", item: "filter")
+    }
 }
 
 extension TrackersViewController: HabitCreationDelegate {
@@ -246,7 +269,6 @@ extension TrackersViewController: HabitCreationDelegate {
     func addTracker(_ tracker: Tracker, toCategory category: String) {
         try? trackerStore.addTracker(tracker)
     }
-
 }
 
 // MARK: - UICollectionView DataSource & Delegate
@@ -312,6 +334,7 @@ extension TrackersViewController: UICollectionViewDataSource, UICollectionViewDe
             isEditable: isEditable,
             countOfDays: countOfDays,
             onToggle: { [weak self] in
+                AnalyticsEvent.send(event: "click", screen: "Trackers", item: "track")
                 self?.presenter?.toggleTrackerCompletion(
                     tracker,
                     on: self?.currentDate ?? Date()
@@ -351,14 +374,21 @@ extension TrackersViewController: UICollectionViewDelegate {
         ) { _ in
             let pinTitle = tracker.isPinned ? "Открепить" : "Закрепить"
             let pinAction = UIAction(title: pinTitle) { [weak self] _ in
+                AnalyticsEvent.send(
+                    event: "click",
+                    screen: "Trackers",
+                    item: tracker.isPinned ? "unpin" : "pin"
+                )
                 self?.presenter?.togglePin(for: tracker)
             }
 
             let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+                AnalyticsEvent.send(event: "click", screen: "Trackers", item: "edit")
                 self?.presenter?.editTracker(tracker)
             }
 
             let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                AnalyticsEvent.send(event: "click", screen: "Trackers", item: "delete")
                 self?.presentDeleteAlert(for: tracker)
             }
 
