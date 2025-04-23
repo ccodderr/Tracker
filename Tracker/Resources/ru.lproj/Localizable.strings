@@ -34,3 +34,9 @@
 "category.empty.state.title" = "Привычки и события можно объединить по смыслу";
 "tabbar.statistics.title" = "Статистика";
 "search.title" = "Поиск";
+"filters.title" = "Фильтры";
+"empty.result" = "Ничего не найдено";
+"delete.confirmation" = "Уверены что хотите удалить трекер?";
+"unpin.action" = "Открепить";
+"pin.action" = "Закрепить";
+"edit.action" = "Редактировать";

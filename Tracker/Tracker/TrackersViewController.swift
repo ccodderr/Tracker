@@ -49,7 +49,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     
     private lazy var filterButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Фильтры", for: .normal)
+        button.setTitle(.localized.localized.filtersTitle, for: .normal)
         button.addTarget(self, action: #selector(filtersButtonTapped), for: .touchUpInside)
         button.backgroundColor = .ypBlue
         button.layer.cornerRadius = 16
@@ -70,7 +70,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     
     private let searchEmptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ничего не найдено"
+        label.text = .localized.localized.emptyResult
         label.textColor = .ypBlack
         label.font = .systemFont(ofSize: 12)
         return label
@@ -213,6 +213,8 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
         self.visibleCategories = categories
         updateEmptyStateVisibility()
         collectionView.reloadData()
+        
+        filterButton.isHidden = categories.count == 0
     }
     
     func reloadTrackers() {
@@ -262,7 +264,7 @@ final class TrackersViewController: UIViewController, TrackersViewControllerProt
     
     private func presentDeleteAlert(for tracker: Tracker) {
         let alert = UIAlertController(
-            title: "Уверены что хотите удалить трекер?",
+            title: .localized.localized.trackerDeleteConfirmation,
             message: nil,
             preferredStyle: .actionSheet
         )
@@ -402,7 +404,9 @@ extension TrackersViewController: UICollectionViewDelegate {
             identifier: nil,
             previewProvider: nil
         ) { _ in
-            let pinTitle = tracker.isPinned ? "Открепить" : "Закрепить"
+            let pinTitle = tracker.isPinned 
+            ? String.localized.localized.unpinTitle
+            : String.localized.localized.pinTitle
             let pinAction = UIAction(title: pinTitle) { [weak self] _ in
                 AnalyticsEvent.send(
                     event: "click",
@@ -412,12 +416,12 @@ extension TrackersViewController: UICollectionViewDelegate {
                 self?.presenter?.togglePin(for: tracker)
             }
 
-            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+            let editAction = UIAction(title: .localized.localized.editActionTitle) { [weak self] _ in
                 AnalyticsEvent.send(event: "click", screen: "Trackers", item: "edit")
                 self?.presenter?.editTracker(tracker)
             }
 
-            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+            let deleteAction = UIAction(title: .localized.localized.deleteTitle, attributes: .destructive) { [weak self] _ in
                 AnalyticsEvent.send(event: "click", screen: "Trackers", item: "delete")
                 self?.presentDeleteAlert(for: tracker)
             }

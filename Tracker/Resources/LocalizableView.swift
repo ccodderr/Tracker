@@ -41,5 +41,12 @@ extension String.localized {
         static let categoryAddButton = NSLocalizedString("category.add.button", comment: "Add category button")
         static let categoryEmptyState = NSLocalizedString("category.empty.state.title", comment: "Category empty state description")
         static let searchTitle = NSLocalizedString("search.title", comment: "Title for the search screen or field")
+        static let filtersTitle = NSLocalizedString("filters.title", comment: "Title for the filters screen")
+        static let emptyResult = NSLocalizedString("empty.result", comment: "Message shown when no results are found")
+        static let trackerDeleteConfirmation = NSLocalizedString("delete.confirmation", comment: "Confirmation message for deleting a tracker")
+        static let unpinTitle = NSLocalizedString("unpin.action", comment: "Action to unpin a tracker")
+        static let pinTitle = NSLocalizedString("pin.action", comment: "Action to pin a tracker")
+        static let editActionTitle = NSLocalizedString("edit.action", comment: "Action to edit a tracker")
+
     }
 }

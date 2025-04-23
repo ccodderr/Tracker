@@ -34,3 +34,9 @@
 "category.empty.state.title" = "You can group habits and events by meaning";
 "tabbar.statistics.title" = "Statistics";
 "search.title" = "Search";
+"filters.title" = "Filters";
+"empty.result" = "Nothing found";
+"delete.confirmation" = "Are you sure you want to delete the tracker?";
+"unpin.action" = "Unpin";
+"pin.action" = "Pin";
+"edit.action" = "Edit";
