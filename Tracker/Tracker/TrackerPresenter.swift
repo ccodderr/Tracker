@@ -21,6 +21,9 @@ protocol TrackersPresenterProtocol: AnyObject {
     func editTracker(_ tracker: Tracker)
     func deleteTracker(_ tracker: Tracker)
     func updateTracker(_ tracker: Tracker)
+    func applyFilter(_ filter: FilterType)
+    func getCurrentFilter() -> FilterType
+    func isFilterActive() -> Bool
 }
 
 // MARK: - Presenter
@@ -32,6 +35,9 @@ final class TrackersPresenter: TrackersPresenterProtocol {
     private let recordStore: TrackerRecordStore
     private var currentDate: Date = Date()
     private var pinnedTrackers: [Tracker] = []
+    private var currentFilter: FilterType = .allTrackers
+    private let userDefaults = UserDefaults.standard
+    private let filterKey = "selectedFilterType"
     
     init(
         trackerStore: TrackerStore = TrackerStore(),
@@ -41,11 +47,18 @@ final class TrackersPresenter: TrackersPresenterProtocol {
         self.recordStore = recordStore
         trackerStore.delegate = self
         recordStore.delegate = self
+        
+        if let savedFilter = FilterType(rawValue: userDefaults.integer(forKey: filterKey)) {
+            currentFilter = savedFilter
+        }
     }
     
     func viewDidLoad() {
         categories = categorize(trackers: trackerStore.trackers)
-        dateChanged(to: currentDate)
+        if currentFilter == .todaysTrackers {
+            currentDate = Date()
+        }
+        applyFilterAndUpdateView()
     }
     
     func getCategories() -> [TrackerCategory] {
@@ -149,7 +162,78 @@ final class TrackersPresenter: TrackersPresenterProtocol {
             recordStore.addRecord(record)
         }
         
-        dateChanged(to: date)
+        applyFilterAndUpdateView()
+    }
+    
+    // MARK: - Filter Management
+    func applyFilter(_ filter: FilterType) {
+        currentFilter = filter
+        userDefaults.set(filter.rawValue, forKey: filterKey)
+        
+        if filter == .todaysTrackers {
+            currentDate = Date()
+            view?.didUpdateDate(currentDate)
+        }
+        
+        applyFilterAndUpdateView()
+    }
+    
+    func getCurrentFilter() -> FilterType {
+        return currentFilter
+    }
+    
+    func isFilterActive() -> Bool {
+        return currentFilter != .allTrackers
+    }
+    
+    private func applyFilterAndUpdateView() {
+        let calendar = Calendar.current
+        let weekdayNumber = calendar.component(.weekday, from: currentDate)
+        
+        guard let selectedWeekday = Weekdays.from(weekdayNumber) else { return }
+        
+        var filteredCategories = categories.map { category in
+            let filteredTrackers = category.trackers.filter { tracker in
+                if tracker.explicitDate != nil {
+                    return Calendar.current.isDateInToday(currentDate)
+                }
+                return tracker.schedule.contains(selectedWeekday)
+            }
+            return TrackerCategory(
+                title: category.title,
+                trackers: filteredTrackers
+            )
+        }
+        switch currentFilter {
+        case .allTrackers:
+            break
+        case .todaysTrackers:
+            break
+        case .completedTrackers:
+            filteredCategories = filteredCategories.map { category in
+                let completedTrackers = category.trackers.filter { tracker in
+                    return isTrackerCompleted(tracker, date: currentDate)
+                }
+                return TrackerCategory(title: category.title, trackers: completedTrackers)
+            }
+        case .notCompletedTrackers:
+            filteredCategories = filteredCategories.map { category in
+                let notCompletedTrackers = category.trackers.filter { tracker in
+                    return !isTrackerCompleted(tracker, date: currentDate)
+                }
+                return TrackerCategory(title: category.title, trackers: notCompletedTrackers)
+            }
+        }
+        
+        filteredCategories = filteredCategories.filter { !$0.trackers.isEmpty }
+        
+        if filteredCategories.isEmpty {
+            view?.showPlaceholder(message: "Ничего не найдено")
+        } else {
+            view?.hidePlaceholder()
+        }
+        
+        view?.updateTrackers(filteredCategories)
     }
 }
 
@@ -157,12 +241,12 @@ extension TrackersPresenter: TrackerStoreDelegate {
     func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
         let trackers = store.trackers
         categories = categorize(trackers: trackers)
-        dateChanged(to: currentDate)
+        applyFilterAndUpdateView()
     }
 }
 
 extension TrackersPresenter: TrackerRecordStoreDelegate {
     func didUpdateRecords() {
-        dateChanged(to: currentDate)
+        applyFilterAndUpdateView()
     }
 }
