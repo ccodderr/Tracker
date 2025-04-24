@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -120,9 +120,9 @@
 		EEA40BDE15543C594EF85E0C /* Pods-Tracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tracker.release.xcconfig"; path = "Target Support Files/Pods-Tracker/Pods-Tracker.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		26E901AA2DB959EB004224B8 /* TrackerTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = TrackerTests; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
+/* Begin PBXGroup section */
+		26E901AA2DB959EB004224B8 /* TrackerTests */ = {isa = PBXGroup; explicitFileTypes = {}; explicitFolders = (); path = TrackerTests; sourceTree = "<group>"; };
+/* End PBXGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		26A398A82D5100480049556F /* Frameworks */ = {
