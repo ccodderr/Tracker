@@ -364,9 +364,6 @@
 			dependencies = (
 				26E901AE2DB959EB004224B8 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				26E901AA2DB959EB004224B8 /* TrackerTests */,
-			);
 			name = TrackerTests;
 			packageProductDependencies = (
 				26E901B82DB95B72004224B8 /* SnapshotTesting */,
