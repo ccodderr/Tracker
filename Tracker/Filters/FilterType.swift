@@ -6,21 +6,17 @@
 //
 
 enum FilterType: Int, CaseIterable {
-    case allTrackers = 0
-    case todaysTrackers = 1
-    case completedTrackers = 2
-    case notCompletedTrackers = 3
+    case allTrackers
+    case todaysTrackers
+    case completedTrackers
+    case notCompletedTrackers
     
     var title: String {
         switch self {
-        case .allTrackers:
-            return "Все трекеры"
-        case .todaysTrackers:
-            return "Трекеры на сегодня"
-        case .completedTrackers:
-            return "Завершенные"
-        case .notCompletedTrackers:
-            return "Не завершенные"
+        case .allTrackers: "Все трекеры"
+        case .todaysTrackers: "Трекеры на сегодня"
+        case .completedTrackers: "Завершенные"
+        case .notCompletedTrackers: "Не завершенные"
         }
     }
 }

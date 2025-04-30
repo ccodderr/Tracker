@@ -23,4 +23,14 @@ final class TrackerTests: XCTestCase {
         
         assertSnapshot(of: nav, as: .image)
     }
+    
+    func testTrackersScreenLight() throws {
+        let vc = TrackersViewController()
+        assertSnapshots(of: vc, as: [.image(traits: .init(userInterfaceStyle: .light))])
+    }
+    
+    func testTrackersScreenDark() throws {
+        let vc = TrackersViewController()
+        assertSnapshots(of: vc, as: [.image(traits: .init(userInterfaceStyle: .dark))])
+    }
 }

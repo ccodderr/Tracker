@@ -38,21 +38,17 @@ final class StatisticsViewController: UIViewController, StatisticsViewController
     }()
     
     private enum StatisticType: Int, CaseIterable {
-        case bestPeriod = 0
-        case perfectDays = 1
-        case completedTrackers = 2
-        case averageValue = 3
+        case bestPeriod
+        case perfectDays
+        case completedTrackers
+        case averageValue
         
         var title: String {
             switch self {
-            case .bestPeriod:
-                return "Лучший период"
-            case .perfectDays:
-                return "Идеальные дни"
-            case .completedTrackers:
-                return "Трекеров завершено"
-            case .averageValue:
-                return "Среднее значение"
+            case .bestPeriod: "Лучший период"
+            case .perfectDays: "Идеальные дни"
+            case .completedTrackers: "Трекеров завершено"
+            case .averageValue: "Среднее значение"
             }
         }
     }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-public extension String {
+extension String {
     struct localized {
         private init() { }
         
