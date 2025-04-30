@@ -2,7 +2,7 @@
 //  TrackerTests.swift
 //  TrackerTests
 //
-//  Created by Yana Silosieva on 23.04.2025.
+//  Created by Yana Silosieva on 30.04.2025.
 //
 
 import Testing
@@ -15,9 +15,11 @@ final class TrackerTests: XCTestCase {
     func testViewController() {
         let vc = TrackersViewController()
         let nav = UINavigationController(rootViewController: vc)
-        nav.overrideUserInterfaceStyle = .light
+        nav.overrideUserInterfaceStyle = .dark
         
         _ = nav.view
+        nav.view.frame = UIScreen.main.bounds
+        nav.view.layoutIfNeeded()
         
         assertSnapshot(of: nav, as: .image)
     }
