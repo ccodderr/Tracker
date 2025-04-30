@@ -5,6 +5,8 @@
 //  Created by Yana Silosieva on 14.04.2025.
 //
 
+import Foundation
+
 enum Weekdays: String, CaseIterable, Codable {
     case monday = "Monday"
     case tuesday = "Tuesday"
@@ -28,6 +30,16 @@ enum Weekdays: String, CaseIterable, Codable {
         case .saturday: return 7
         case .sunday: return 1
         }
+    }
+    
+    var localized: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        guard let symbols = formatter.weekdaySymbols else {
+            return self.rawValue
+        }
+        let index = self.number - 1
+        return symbols[index].capitalized
     }
 }
 

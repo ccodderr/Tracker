@@ -10,7 +10,7 @@ import UIKit
 final class TabBarController: UITabBarController {
     init() {
         super.init(nibName: nil, bundle: nil)
-        tabBar.backgroundColor = .white
+        tabBar.backgroundColor = .ypWhite
         tabBar.barTintColor = .gray
         tabBar.tintColor = .ypBlue
         tabBar.isTranslucent = false
@@ -19,21 +19,27 @@ final class TabBarController: UITabBarController {
         trackerViewController.presenter = TrackersPresenter()
         
         let trackerNavigationController = UINavigationController(rootViewController: trackerViewController)
+        
         trackerNavigationController.tabBarItem = UITabBarItem(
-            title: "Трекеры",
+            title: .localized.localized.trackersTitle,
             image: UIImage(systemName: "record.circle.fill"),
             selectedImage: nil
         )
         
         let statisticsViewController = StatisticsViewController()
         statisticsViewController.presenter = StatisticsPresenter()
-        statisticsViewController.tabBarItem = UITabBarItem(
-            title: "Статистика",
+        
+        let statisticsNavigationController = UINavigationController(rootViewController: statisticsViewController)
+        
+        statisticsNavigationController.tabBarItem = UITabBarItem(
+            title: .localized.localized.statisticsTitle,
             image: UIImage(systemName: "hare.fill"),
             selectedImage: nil
         )
         
-        self.viewControllers = [trackerNavigationController, statisticsViewController]
+        self.viewControllers = [
+            trackerNavigationController, statisticsNavigationController
+        ]
     }
     
     required init?(coder: NSCoder) {

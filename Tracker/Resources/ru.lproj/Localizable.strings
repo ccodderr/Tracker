@@ -1,0 +1,42 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Yana Silosieva on 20.04.2025.
+  
+*/
+
+"empty.state.Title" = "Что будем отслеживать?";
+"tabbar.trackers.title" = "Трекеры";
+"onboarding.title.1" = "Отслеживайте только то, что хотите";
+"onboarding.title.2" = "Даже если это не литры воды и йога";
+"onboarding.button.title" = "Вот это технологии!";
+"tracker.creation.title" = "Создание трекера";
+"tracker.type.habit" = "Привычка";
+"tracker.type.irregularEvent" = "Нерегулярное событие";
+"tracker.schedule.title" = "Расписание";
+"tracker.category.title" = "Категория";
+"tracker.new.habit.title" = "Новая привычка";
+"tracker.new.irregularEvent.title" = "Новое нерегулярное событие";
+"tracker.action.create" = "Создать";
+"tracker.action.cancel" = "Отменить";
+"tracker.color.title" = "Цвет";
+"tracker.emoji.title" = "Emoji";
+"tracker.name.placeholder" = "Введите название трекера";
+"action.done" = "Готово";
+"category.input.placeholder" = "Введите название категории";
+"category.edit.title" = "Редактирование категории";
+"category.new.title" = "Новая категория";
+"action.delete" = "Удалить";
+"action.edit" = "Редактировать";
+"category.delete.confirmation" = "Эта категория точно не нужна?";
+"category.add.button" = "Добавить категорию";
+"category.empty.state.title" = "Привычки и события можно объединить по смыслу";
+"tabbar.statistics.title" = "Статистика";
+"search.title" = "Поиск";
+"filters.title" = "Фильтры";
+"empty.result" = "Ничего не найдено";
+"delete.confirmation" = "Уверены что хотите удалить трекер?";
+"unpin.action" = "Открепить";
+"pin.action" = "Закрепить";
+"edit.action" = "Редактировать";

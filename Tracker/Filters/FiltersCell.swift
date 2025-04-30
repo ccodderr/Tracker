@@ -1,15 +1,13 @@
 //
-//  CategoryCell.swift
+//  FiltersCell.swift
 //  Tracker
 //
-//  Created by Yana Silosieva on 20.04.2025.
+//  Created by Yana Silosieva on 23.04.2025.
 //
 
 import UIKit
 
-final class CategoryCell: UITableViewCell {
-    static let reuseIdentifier = "CategoryCell"
-    
+final class FiltersCell: UITableViewCell {
     // MARK: - UI Elements
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -56,13 +54,9 @@ final class CategoryCell: UITableViewCell {
         ])
     }
     
-    // MARK: - Configuration
-    func configure(with category: Category, isSelected: Bool, isLast: Bool) {
-        titleLabel.text = category.title
+    // MARK: - Configure
+    func configure(title: String, isSelected: Bool) {
+        titleLabel.text = title
         checkmarkImageView.isHidden = !isSelected
-        
-        contentView.clipsToBounds = true
-        contentView.layer.cornerRadius = isLast ? 16 : 0
-        contentView.layer.maskedCorners = [.layerMaxXMaxYCorner, .layerMinXMaxYCorner]
     }
 }

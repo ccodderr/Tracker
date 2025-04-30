@@ -64,6 +64,38 @@ final class TrackerStore: NSObject {
         try context.save()
     }
     
+    func updatePinState(for tracker: Tracker, isPinned: Bool) {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        
+        if let result = try? context.fetch(request).first {
+            result.isPinned = isPinned
+            try? context.save()
+        }
+    }
+    
+    func fetchTrackerCoreData(by id: UUID) throws -> TrackerCoreData? {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.fetchLimit = 1
+        return try context.fetch(request).first
+    }
+    
+    func delete(_ trackerData: TrackerCoreData) {
+        context.delete(trackerData)
+        try? context.save()
+    }
+    
+    func updateTracker(_ tracker: Tracker) throws {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+
+        if let trackerData = try context.fetch(request).first {
+            update(trackerData, from: tracker)
+            try context.save()
+        }
+    }
+    
     private func update(_ trackerData: TrackerCoreData, from tracker: Tracker) {
         trackerData.id = tracker.id
         trackerData.title = tracker.title
@@ -72,6 +104,7 @@ final class TrackerStore: NSObject {
         trackerData.color = tracker.color
         trackerData.schedule = tracker.schedule as NSObject
         trackerData.category = tracker.category
+        trackerData.isPinned = tracker.isPinned
     }
     
     private func tracker(from data: TrackerCoreData) -> Tracker? {
@@ -91,7 +124,8 @@ final class TrackerStore: NSObject {
             emoji: emoji,
             schedule: schedule,
             explicitDate: data.explictDate,
-            category: category
+            category: category,
+            isPinned: data.isPinned
         )
     }
 }

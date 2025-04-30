@@ -5,3 +5,38 @@
   Created by Yana Silosieva on 20.04.2025.
   
 */
+
+"empty.state.Title" = "What would you like to track?";
+"tabbar.trackers.title" = "Trackers";
+"onboarding.title.1" = "Track only what matters to you";
+"onboarding.title.2" = "Even if it’s not liters of water or yoga";
+"onboarding.button.title" = "Now that’s technology!";
+"tracker.creation.title" = "Create Tracker";
+"tracker.type.habit" = "Habit";
+"tracker.type.irregularEvent" = "Irregular Event";
+"tracker.schedule.title" = "Schedule";
+"tracker.category.title" = "Category";
+"tracker.new.habit.title" = "New Habit";
+"tracker.new.irregularEvent.title" = "New Irregular Event";
+"tracker.action.create" = "Create";
+"tracker.action.cancel" = "Cancel";
+"tracker.color.title" = "Color";
+"tracker.emoji.title" = "Emoji";
+"tracker.name.placeholder" = "Enter tracker name";
+"action.done" = "Done";
+"category.input.placeholder" = "Enter category name";
+"category.edit.title" = "Edit Category";
+"category.new.title" = "New Category";
+"action.delete" = "Delete";
+"action.edit" = "Edit";
+"category.delete.confirmation" = "Are you sure you don’t need this category?";
+"category.add.button" = "Add Category";
+"category.empty.state.title" = "You can group habits and events by meaning";
+"tabbar.statistics.title" = "Statistics";
+"search.title" = "Search";
+"filters.title" = "Filters";
+"empty.result" = "Nothing found";
+"delete.confirmation" = "Are you sure you want to delete the tracker?";
+"unpin.action" = "Unpin";
+"pin.action" = "Pin";
+"edit.action" = "Edit";

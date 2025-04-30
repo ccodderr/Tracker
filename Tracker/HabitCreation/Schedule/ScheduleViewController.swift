@@ -15,8 +15,8 @@ final class ScheduleViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Расписание"
-        label.textColor = .black
+        label.text = .localized.localized.scheduleTitle
+        label.textColor = .ypBlack
         label.font = .systemFont(ofSize: 16, weight: .medium)
         return label
     }()
@@ -33,10 +33,10 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let doneButton = UIButton()
-        doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitle(.localized.localized.doneTitle, for: .normal)
         doneButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        doneButton.backgroundColor = .black
-        doneButton.setTitleColor(.white, for: .normal)
+        doneButton.backgroundColor = .ypBlack
+        doneButton.setTitleColor(.ypWhite, for: .normal)
         doneButton.layer.cornerRadius = 12
         doneButton.addTarget(self, action: #selector(doneTapped), for: .touchUpInside)
         return doneButton
@@ -64,7 +64,7 @@ final class ScheduleViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         
         [
             titleLabel,
@@ -84,7 +84,7 @@ final class ScheduleViewController: UIViewController {
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            doneButton.heightAnchor.constraint(equalToConstant: 50),
+            doneButton.heightAnchor.constraint(equalToConstant: 60),
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
@@ -115,7 +115,7 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         
         let day = weekdays[indexPath.row]
         
-        cell.configure(day: day.rawValue, isSelected: selectedDays.contains(day))
+        cell.configure(day: day.localized, isSelected: selectedDays.contains(day))
         
         cell.switchChanged = { [weak self] isOn in
             guard let self else { return }

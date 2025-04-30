@@ -66,7 +66,7 @@ final class TrackerCell: UICollectionViewCell {
     
     private lazy var countOfDaysLabel: UILabel = {
         let label = UILabel()
-        label.text = "\(countOfDays) день"
+        label.text = ""
         label.font = .systemFont(ofSize: 12, weight: .medium)
         return label
     }()
@@ -143,25 +143,13 @@ final class TrackerCell: UICollectionViewCell {
     private func updateUI() {
         let iconName = isCompleted ? "checkmark" : "plus"
         button.setImage(UIImage(systemName: iconName), for: .normal)
-        countOfDaysLabel.text = "\(countOfDays) \(dayText(for: countOfDays))"
-    }
-    
-    private func dayText(for count: Int) -> String {
-        let remainder10 = count % 10
-        let remainder100 = count % 100
-
-        if remainder100 >= 11 && remainder100 <= 14 {
-            return "дней"
-        }
-
-        switch remainder10 {
-        case 1:
-            return "день"
-        case 2...4:
-            return "дня"
-        default:
-            return "дней"
-        }
+        
+        let localizedDays = String.localizedStringWithFormat(
+            NSLocalizedString("numberOfDays", comment: "Plural format for days count"),
+            countOfDays
+        )
+        
+        countOfDaysLabel.text = localizedDays
     }
     
     @objc private func buttonTapped() {
@@ -192,7 +180,7 @@ final class TextSectionHeader: UICollectionReusableView {
     }
     
     private func setupView() {
-        backgroundColor = .systemBackground
+        backgroundColor = .ypWhite
         
         addSubview(titleLabel)
         

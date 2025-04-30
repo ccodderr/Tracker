@@ -15,7 +15,7 @@ final class ColorCell: UICollectionViewCell {
         let view = UIView()
         view.layer.cornerRadius = 10
         view.layer.masksToBounds = true
-        view.backgroundColor = .white
+        view.backgroundColor = .ypWhite
         return view
     }()
     
